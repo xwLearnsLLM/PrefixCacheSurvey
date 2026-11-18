@@ -1,0 +1,73 @@
+{
+  "config": {
+    "machines": 4,
+    "ranks": 8,
+    "l1_gb_per_rank": 4096.0,
+    "l2_gb_per_machine": 2048.0,
+    "l3_gb": 262144.0,
+    "kv_bytes_per_token": 107520,
+    "chunk_tokens": 256,
+    "max_batched_tokens": 8192,
+    "prefill_tps": 10000.0,
+    "max_decode_bs": 32,
+    "mtp_probs": [
+      0.5,
+      0.25,
+      0.15,
+      0.1
+    ],
+    "agents": 4000,
+    "hours": 3.0,
+    "turns_mean": 8.0,
+    "turns_max": 128,
+    "prefill_len_mean": 4096.0,
+    "decode_len_mean": 512.0,
+    "think_mean_s": 600.0,
+    "bucket_s": 60.0,
+    "seed": 42,
+    "out": "out_n4000",
+    "sched_decode_weight": 1.0,
+    "decode_tps_est": 604.5
+  },
+  "l1_cap_tokens_per_rank": 38095238,
+  "l2_cap_tokens_per_machine": 19047424,
+  "l3_cap_tokens_global": 2438095104,
+  "prefill_count": 28728,
+  "turn_count": 28727,
+  "rejects": 0,
+  "hit_rate_token_weighted": {
+    "L1": 0.14407993783804535,
+    "L2": 0.15015042017448843,
+    "L3": 0.5522411473794143
+  },
+  "hit_rate_req_mean": {
+    "L1": 0.16009837573508728,
+    "L2": 0.12822621767179182,
+    "L3": 0.5207726363421614
+  },
+  "decode_avg_bs": 2.3429207142693405,
+  "ttft_s": {
+    "mean": 0.5991085175514212,
+    "p50": 0.49581887374409916,
+    "p90": 0.8207407100576631,
+    "p99": 1.2464889371134038
+  },
+  "tpot_s": {
+    "mean": 0.06088171975020479,
+    "p50": 0.04736371124033138,
+    "p90": 0.11054431924214655,
+    "p99": 0.1432914569018891
+  },
+  "te2e_s": {
+    "mean": 31.769821744094774,
+    "p50": 24.812617799996133,
+    "p90": 57.33780305490614,
+    "p99": 74.25311600006022
+  },
+  "machine_busy_ratio": [
+    0.9997,
+    0.8936,
+    0.6785,
+    0.523
+  ]
+}

@@ -1,0 +1,38 @@
+我看了你调研提炼的markdown，写的不错。根据这个结果，我们可以先设想一个针对 HHM + ASU 的合理的前缀缓存管理系统。 (HHM就是指高带宽DRAM和HBF合封的die)，每个NPU包括 36GB HHM-DRAM (实际可用 24GB，带宽3.2TBps) 以及 320 GB，带宽800GB的 HHM-HBF 。
+
+我们设计的算法抽象应该考虑到 HHM + ASU 的硬件能力，据此设计 "HHM+ASU原生KVC管理系统" 
+
+我们发现该系统与现有系统有几个不一样的点：
+1. 互联域不同：HHM是每卡独有，ASU是全局共享。这一点和hicache的HBM+DRAM+SSD最像，唯一的差别是DRAM这一层是机内共享的，而HHM-HBF则是卡内独享的。不过hicache的DRAM这一层本身也不会跨卡复用，所以软件上可能刚好一样了。
+2. 互联方式不同：仅仅允许 HHM-DRAM <-> HHM-HBF, HHM-DRAM <-> ASU, HHM-HBF <-> ASU 这三种南北向数据通路，数据不允许走P2P东西向通路（但是控制信号还是可以走的）。
+3. ASU这一层其实是一种类似nvidia ICMS的高带宽、高IOPS、全局池化的KV语义存储层，可以抽象为具有5种基本操作：
+     - lookup: 查询一个Key是否存在
+     - lock/unlock: 要使用一个key之前，先锁住，避免它在使用时ASU内部的自动淘汰算法把它淘汰了。unlock则是解锁。
+     - read: 指定key，读取value(也即kvcache block数据)，会直通到NPU HHM上
+     - write: 指定key，写value，同样会直通。注意这里读写的单位都是整个KV block ，不允许部分写
+     - delete: 指定key，主动删除它，腾出空间（另外ASU内根据自身剩余容量，也会主动淘汰掉一些block，淘汰算法是LRU）
+     - 以上操作也可能组合出一些合并的原子操作，比如 lookup+lock 原子操作
+   需要注意区分 "KV语义" 和 "KVcache" ，KV语义是指由指定的Key，可以lookup/lock/unlock/read/write/delete特定的Value，只不过这个Value存的实际上是kvcache block。而kv语义的key可以是kvcache的token hash+position
+
+
+此外，我们针对KVC管理系统还给出这几个原则：
+1. 算传同步：为了设计简单，所有的前缀缓存在数据面的传输（包括promote和demote）都必须和model.forward一起走，也即同步执行（可跨层掩盖），但是不能异步执行。
+2. 命中率原则：
+     - HHM命中率越高越好。在HHM内部，命中HBF和命中DRAM是一样的（因为HBF命中可以通过滚动加载消除其影响，对性能没有任何影响）
+     - ASU命中率越高越好。如果一个块没有命中 HHM ，就看 ASU有没有命中。ASU命中相比HHM命中有特定的性能损失，但总比完全没命中要好
+3. 降写原则：HHM-HBF和ASU都有特定的写寿命，应该尽量少写。其中HHM-HBF的寿命问题更严重一些。
+
+
+
+我想了一个初步方案设计，以hicache为蓝本，但也有很多不一样的地方，体现我们的特色。
+
+与hicache相似的部分：
+1. 每个DP rank维护自己的 radix tree , 不存在全局的radix tree。ASU则作为全局KV存储，维护自己的内部KV映射。hicache radix tree 元数据和ASU KV存储中的元数据相对独立，hicache radix tree也需要面对ASU中block被主动删掉的情况（体现为上一次lookup得到某个key，过了一段时间lookup不到了，一般就是因为ASU主动删除了这个block，或者这个block被其它hicache实例主动delete了），hicache radix tree 站在一个 DPrank的视角，维护自身可见的全部kvcache状态（比如哪些block存在ASU，哪些存在HBF，哪些存在DRAM）。对于ASU主动删除的情况可以进行懒惰更新，也即在需要使用kvcache时lookup一次，如果发现某个ASU key查不到了，就删除对应的radix tree节点。
+2 ...
+
+与hicache不同的部分：
+1. 3级淘汰算法需要重新设计:
+     - HHM-DRAM 淘汰到 HHM-HBF : 我感觉不能再是淘汰冷的，而是淘汰热的，因为我要尽量降低 HHM-HBF 的写，尽量就把一些持久的块放到 HBF 上去，避免HBF反复淘汰，反复写新的块
+     - HHM-DRAM 和 HHM-HBF 淘汰到 ASU : 和传统方法应该相似，尽量淘汰冷的。但是应该倾向于从树根开始淘汰，为了保证跨节点复用（其它DP rank必须从头开始命中）
+
+帮我细化一下 这个 "HHM+ASU原生KVC管理系统" ，同样是给出方案的提炼，写另一个 markdown

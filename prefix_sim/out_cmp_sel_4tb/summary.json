@@ -1,0 +1,86 @@
+{
+  "config": {
+    "machines": 4,
+    "ranks": 8,
+    "l1_gb_per_rank": 4096.0,
+    "l2_gb_per_machine": 2048.0,
+    "l3_gb": 262144.0,
+    "kv_bytes_per_token": 107520,
+    "chunk_tokens": 256,
+    "max_batched_tokens": 8192,
+    "prefill_tps": 10000.0,
+    "max_decode_bs": 32,
+    "mtp_probs": [
+      0.5,
+      0.25,
+      0.15,
+      0.1
+    ],
+    "agents": 7000,
+    "hours": 3.0,
+    "turns_mean": 8.0,
+    "turns_max": 128,
+    "prefill_len_mean": 4096.0,
+    "decode_len_mean": 512.0,
+    "think_mean_s": 600.0,
+    "think_dist": "exponential",
+    "bucket_s": 60.0,
+    "seed": 42,
+    "out": "out_cmp_sel_4tb",
+    "sched_decode_weight": 1.0,
+    "decode_tps_est": 604.5,
+    "write_policy": "write_selective"
+  },
+  "l1_cap_tokens_per_rank": 38095238,
+  "l2_cap_tokens_per_machine": 19047424,
+  "l3_cap_tokens_global": 2438095104,
+  "prefill_count": 11965,
+  "turn_count": 11963,
+  "rejects": 0,
+  "stall_events": 0,
+  "tier_writes_chunks": {
+    "L1": 242371,
+    "L2": 113161,
+    "L3": 88648
+  },
+  "tier_writes_gb": {
+    "L1": 6671.3,
+    "L2": 3114.8,
+    "L3": 2440.0
+  },
+  "hit_rate_token_weighted": {
+    "L1": 0.642591467745633,
+    "L2": 0.0,
+    "L3": 0.0
+  },
+  "hit_rate_req_mean": {
+    "L1": 0.7307923983902659,
+    "L2": 0.0,
+    "L3": 0.0
+  },
+  "decode_avg_bs": 1.424418005297925,
+  "ttft_s": {
+    "mean": 34.48714491662463,
+    "p50": 14.670418350772664,
+    "p90": 98.74613639811233,
+    "p99": 117.82408968124247
+  },
+  "tpot_s": {
+    "mean": 0.8491062838244988,
+    "p50": 1.0147896414342428,
+    "p90": 1.867213245692155,
+    "p99": 2.370627022293595
+  },
+  "te2e_s": {
+    "mean": 468.8006922742874,
+    "p50": 575.1778552360092,
+    "p90": 1039.710571655805,
+    "p99": 1302.9992623496992
+  },
+  "machine_busy_ratio": [
+    0.7282,
+    0.7339,
+    0.723,
+    0.7456
+  ]
+}
