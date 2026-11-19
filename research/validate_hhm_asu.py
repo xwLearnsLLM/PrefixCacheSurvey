@@ -9,15 +9,21 @@ required = [
     "C_D\\leftrightarrow C_H", "C_D\\leftrightarrow C_A", "C_H\\leftrightarrow C_A",
     "不允许 KV 数据走卡间或节点间 P2P", "lookup(key)", "lock(key)", "unlock(key)",
     "read(key)", "write(key, value)", "delete(key)", "model.forward",
-    "稳定热块准入", "ASU 备份顺序：根到叶", "本地空间释放：优先冷叶",
+    "稳定热块准入", "算法 1：备份路径", "算法 2：DRAM 上的观察", "算法 3：从 HBF 前沿",
     "lookup+lock", "write_if_absent", "每 DP rank 的 RadixTree",
-    "不强制 $C_D\\subseteq C_H\\subseteq C_A$", "不能由后台线程异步搬迁",
-    "本地 D／H 在稳态下互斥", "$D+A$ | **允许稳态**", "$D+H$ | **仅限迁移暂态**",
-    "$H+A$ | **非目标状态**", "DRAM 是观察与准入层", "H→A 迁移语义",
+    "不能由后台线程异步搬迁", "本地 DRAM／HBF 不长期重复保存同一块",
+    "$D+A$ | ASU 提供全局备份", "DRAM 是观察与准入层", "时间衰减复用分数",
+    "\\operatorname{Hot}(v,t)", "\\operatorname{AdmitH}(v,t)", "\\operatorname{AdmitA}(v,t)",
+    "\\operatorname{ColdH}(v,t)", "稳定热迁移不受 $F_D$ 限制",
 ]
 for phrase in required:
     if phrase not in text:
         errors.append(f"Missing required design element: {phrase}")
+
+body = text.split("## 附录 A", 1)[0]
+for phrase in ["$D+H$", "$H+A$", "$D+H+A$", "迁移暂态"]:
+    if phrase in body:
+        errors.append(f"Transient-state detail in main text: {phrase}")
 
 if text.count("```") % 2:
     errors.append("Unbalanced code fences")
