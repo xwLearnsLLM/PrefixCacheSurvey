@@ -1,0 +1,267 @@
+pageType: content
+background: {type: solid, color: "$background"}
+notes: KV Cache 软件职责矩阵。原生管理指负责该层 KV 元数据、容量或生命周期；集成支持指能力依赖部署后端；数据面协同指仅注册、寻址、搬运或读写，不接管缓存管理。MemCache 指 Ascend MemCache。
+elements:
+  - elementId: title-kicker
+    elementType: text
+    bounds: [58, 28, 620, 25]
+    content:
+      fontSize: 13
+      fontFamily: 微软雅黑
+      bold: true
+      color: "$managed"
+      letterSpacing: 2
+      wrap: false
+      text: SYSTEM RESPONSIBILITY MAP / 系统职责边界
+  - elementId: title-main
+    elementType: text
+    bounds: [56, 54, 850, 62]
+    content:
+      style: "$title"
+      wrap: false
+      align: [left, middle]
+      text: KV Cache 软件职责图
+  - elementId: title-subtitle
+    elementType: text
+    bounds: [58, 118, 1100, 30]
+    content:
+      style: "$subtitle"
+      wrap: false
+      text: 缓存管理、集成后端与纯数据面能力的边界｜2026-11 官方公开资料
+  - elementId: title-rule
+    elementType: shape
+    bounds: [56, 158, 1808, 2]
+    shapeName: rect
+    fill: {type: solid, color: "$primary"}
+  - elementId: legend
+    elementType: text
+    bounds: [925, 113, 939, 36]
+    content:
+      fontSize: 14
+      fontFamily: 微软雅黑
+      color: "$muted"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p><span style="color:$managed"><strong>● 原生管理</strong></span>　<span style="color:$integrated"><strong>◐ 集成／部署相关</strong></span>　<span style="color:$dataplane"><strong>◇ 数据面／协同</strong></span>　<span style="color:$unsupported"><strong>— 不负责</strong></span></p>
+  - elementId: responsibility-matrix
+    elementType: table
+    bounds: [56, 184, 1808, 834]
+    columnWidths: [0.095, 0.151, 0.151, 0.151, 0.151, 0.15, 0.151]
+    rowHeights: [0.094, 0.1812, 0.1812, 0.1812, 0.1812, 0.1812]
+    style: "$matrix"
+    rows:
+      - - text: |
+            <p>存储层级</p>
+        - text: |
+            <p>HiCache</p>
+            <p><span style="font-size:12px;color:#DCE7E2">SGLang 缓存子系统</span></p>
+        - text: |
+            <p>Mooncake</p>
+            <p><span style="font-size:12px;color:#DCE7E2">分布式 KV Store</span></p>
+        - text: |
+            <p>LMCache</p>
+            <p><span style="font-size:12px;color:#DCE7E2">独立缓存服务</span></p>
+        - text: |
+            <p>MemCache</p>
+            <p><span style="font-size:12px;color:#DCE7E2">Ascend KV 对象池</span></p>
+        - text: |
+            <p>MemFabric</p>
+            <p><span style="font-size:12px;color:#DCE7E2">统一内存数据面</span></p>
+        - text: |
+            <p>vLLM OffloadingConnector</p>
+            <p><span style="font-size:12px;color:#DCE7E2">分层卸载连接器</span></p>
+      - - text: |
+            <p>HBM</p>
+            <p><span style="font-size:12px;color:$muted">L1 · 加速器显存</span></p>
+        - text: |
+            <p><span style="color:$managed"><strong>● 原生管理</strong></span></p>
+            <p>L1 Device Pool</p>
+            <p>Radix 前缀树＋页管理</p>
+            <p>实例私有；复用／淘汰</p>
+        - text: |
+            <p><span style="color:$dataplane"><strong>◇ 数据面／协同</strong></span></p>
+            <p>注册引擎 HBM</p>
+            <p>Transfer Engine 读写</p>
+            <p>D2D／D2H；不管 BlockPool</p>
+        - text: |
+            <p><span style="color:$dataplane"><strong>◇ 数据面／协同</strong></span></p>
+            <p>Connector 读写引擎 HBM</p>
+            <p>KV chunk＋逐层 load/save</p>
+            <p>不替换 vLLM BlockPool</p>
+        - text: |
+            <p><span style="color:$managed"><strong>● 原生管理</strong></span></p>
+            <p>HBM＋DDR＋SSD 多级池</p>
+            <p>KV Block 对象；淘汰／预取</p>
+            <p>经 AscendStore 接入</p>
+        - text: |
+            <p><span style="color:$dataplane"><strong>◇ 数据面／协同</strong></span></p>
+            <p>本机 HBM 纳入 GVA 池</p>
+            <p>xcopy with GVA</p>
+            <p>D2D／D2H；无 KV／淘汰语义</p>
+        - text: |
+            <p><span style="color:$dataplane"><strong>◇ 数据面／协同</strong></span></p>
+            <p>vLLM 仍管 HBM</p>
+            <p>Connector 异步 DMA</p>
+            <p>offload/load；不替换调度器</p>
+      - - text: |
+            <p>本地 DRAM</p>
+            <p><span style="font-size:12px;color:$muted">L2 · Host 内存</span></p>
+        - text: |
+            <p><span style="color:$managed"><strong>● 原生管理</strong></span></p>
+            <p>L2 私有 Host Pool</p>
+            <p>pinned DRAM</p>
+            <p>write-through/back；H2D/D2H</p>
+        - text: |
+            <p><span style="color:$managed"><strong>● 原生管理</strong></span></p>
+            <p>Client 提供 DRAM 段</p>
+            <p>KV object；Master 元数据</p>
+            <p>同步写入；容量淘汰</p>
+        - text: |
+            <p><span style="color:$managed"><strong>● 原生管理</strong></span></p>
+            <p>本地 CPU／MP Server</p>
+            <p>前缀 hash → KV chunk</p>
+            <p>独立缓存生命周期</p>
+        - text: |
+            <p><span style="color:$managed"><strong>● 原生管理</strong></span></p>
+            <p>LocalService 提供 DDR 池</p>
+            <p>put/get/exist/remove</p>
+            <p>MetaService：key→blob、LRU</p>
+        - text: |
+            <p><span style="color:$dataplane"><strong>◇ 数据面／协同</strong></span></p>
+            <p>本机 DRAM 池化</p>
+            <p>GVA＋memcpy 语义</p>
+            <p>不管 KV 元数据</p>
+        - text: |
+            <p><span style="color:$managed"><strong>● 原生管理</strong></span></p>
+            <p>Host 主层；共享 Host Region</p>
+            <p>LRU／ARC；异步 GPU↔CPU DMA</p>
+            <p>TP 汇聚＋canonical layout</p>
+      - - text: |
+            <p>本地 SSD</p>
+            <p><span style="font-size:12px;color:$muted">L3 · 本机持久层</span></p>
+        - text: |
+            <p><span style="color:$managed"><strong>● 原生管理</strong></span></p>
+            <p>file／fast_file 后端</p>
+            <p>KV page 文件；异步备份／预取</p>
+            <p>fast_file 后台 LRU</p>
+        - text: |
+            <p><span style="color:$managed"><strong>● 原生管理</strong></span></p>
+            <p>Client 本地 SSD／NVMe</p>
+            <p>异步持久化；DRAM miss 回读</p>
+            <p>高水位 spill</p>
+        - text: |
+            <p><span style="color:$managed"><strong>● 原生管理</strong></span></p>
+            <p>local disk／GDS</p>
+            <p>chunk 文件异步存取</p>
+            <p>特定环境支持 GPU Direct Storage</p>
+        - text: |
+            <p><span style="color:$managed"><strong>● 原生管理</strong></span></p>
+            <p>UBSIO SSD 后端</p>
+            <p>多级池冷热交换</p>
+            <p>SSD／逐层能力随版本变化</p>
+        - text: |
+            <p><span style="color:$unsupported"><strong>— 不负责</strong></span></p>
+            <p>不做 SSD 池化</p>
+            <p>不管文件或 KV 生命周期</p>
+        - text: |
+            <p><span style="color:$managed"><strong>● 原生管理</strong></span></p>
+            <p>FS secondary tier</p>
+            <p>content-addressed chunk 文件</p>
+            <p>Host→POSIX/NVMe；必须经过 CPU</p>
+      - - text: |
+            <p>分布式 DRAM</p>
+            <p><span style="font-size:12px;color:$muted">共享远端内存</span></p>
+        - text: |
+            <p><span style="color:$integrated"><strong>◐ 集成支持</strong></span></p>
+            <p>L3 接 Mooncake</p>
+            <p>batch_get/set；Host zero-copy</p>
+            <p>RDMA 由后端提供</p>
+        - text: |
+            <p><span style="color:$managed"><strong>● 原生管理</strong></span></p>
+            <p>集群 DRAM 池</p>
+            <p>Master：放置／副本／租约</p>
+            <p>Transfer Engine：RDMA/TCP P2P</p>
+        - text: |
+            <p><span style="color:$integrated"><strong>◐ 集成支持</strong></span></p>
+            <p>Redis/Valkey、InfiniStore、Mooncake</p>
+            <p>MP 共享 CPU Server</p>
+            <p>P2P／NIXL</p>
+        - text: |
+            <p><span style="color:$managed"><strong>● 原生管理</strong></span></p>
+            <p>跨节点 HBM／DRAM 池</p>
+            <p>全局 MetaService</p>
+            <p>MemFabric OneCopy：D2RH/RH2D</p>
+        - text: |
+            <p><span style="color:$dataplane"><strong>◇ 核心数据面</strong></span></p>
+            <p>跨节点 DRAM／HBM 池</p>
+            <p>64 位 GVA；D2RH/RH2D/RH2H</p>
+            <p>RDMA／SDMA／URMA</p>
+        - text: |
+            <p><span style="color:$integrated"><strong>◐ 集成支持</strong></span></p>
+            <p>P2P secondary tier；Host↔Host</p>
+            <p>ZMQ 协调＋NIXL/RDMA</p>
+            <p>路由指定 peer；非全局统一池</p>
+      - - text: |
+            <p>分布式 SSD</p>
+            <p><span style="font-size:12px;color:$muted">共享持久化存储</span></p>
+        - text: |
+            <p><span style="color:$integrated"><strong>◐ 集成支持</strong></span></p>
+            <p>L3 接 HF3FS／NIXL</p>
+            <p>KV page → 文件／对象</p>
+            <p>共享命名空间；预取</p>
+        - text: |
+            <p><span style="color:$managed"><strong>● 原生管理</strong></span></p>
+            <p>各 Client SSD 构成逻辑存储层</p>
+            <p>Master 定位；所属 Client 回读</p>
+            <p>不是统一 SSD 编址</p>
+        - text: |
+            <p><span style="color:$integrated"><strong>◐ 集成支持</strong></span></p>
+            <p>NFS/WEKA、S3、Mooncake/GDS</p>
+            <p>chunk → 文件／对象</p>
+            <p>跨实例共享</p>
+        - text: |
+            <p><span style="color:$integrated"><strong>◐ 部署相关</strong></span></p>
+            <p>分布式 KV Store 可落 SSD</p>
+            <p>LocalService／UBSIO 提供介质</p>
+            <p>跨机部署边界需核对版本</p>
+        - text: |
+            <p><span style="color:$unsupported"><strong>— 不负责</strong></span></p>
+            <p>不提供 SSD 统一编址</p>
+            <p>SSD 由 MemCache／UBSIO 等负责</p>
+        - text: |
+            <p><span style="color:$integrated"><strong>◐ 集成支持</strong></span></p>
+            <p>共享 FS／S3 OBJ</p>
+            <p>content-addressed chunk</p>
+            <p>共享挂载或 NIXL OBJ；均经 Host</p>
+  - elementId: takeaway-label
+    elementType: text
+    bounds: [58, 1040, 116, 28]
+    content:
+      fontSize: 13
+      fontFamily: 微软雅黑
+      bold: true
+      color: "$managed"
+      wrap: false
+      align: [left, middle]
+      text: 读图结论
+  - elementId: takeaway
+    elementType: text
+    bounds: [174, 1035, 1690, 42]
+    content:
+      fontSize: 17
+      fontFamily: 微软雅黑
+      color: "$ink"
+      align: [left, middle]
+      wrap: false
+      text: |
+        <p><strong>缓存管理面</strong>：HiCache／Mooncake／LMCache／MemCache　｜　<strong>池化与传输数据面</strong>：MemFabric　｜　<strong>vLLM 分层卸载入口</strong>：OffloadingConnector</p>
+  - elementId: footnote
+    elementType: text
+    bounds: [58, 1091, 1806, 52]
+    content:
+      style: "$small"
+      align: [left, top]
+      text: |
+        <p>依据：SGLang HiCache、Mooncake Store、LMCache、Ascend MemCache／MemFabric、vLLM Tiered KV Offloading 官方公开资料。</p>
+        <p>注：●／◐／◇ 描述软件职责，不代表性能优劣；具体能力随版本、部署后端与硬件环境变化。MemCache 指 Ascend MemCache。</p>

@@ -1,0 +1,243 @@
+pageType: content
+background: {type: solid, color: "$bg"}
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [48, 22, 650, 16]
+    content: {fontFamily: 微软雅黑, fontSize: 9, color: "$structural", bold: true, letterSpacing: 1.1, text: "HHM KVCACHE · 技术选型 01/03"}
+  - elementId: title
+    elementType: text
+    bounds: [48, 44, 864, 36]
+    content: {style: "$title", text: "HiCache 与 LMCache：缓存控制面已经做到哪一层？"}
+  - elementId: subtitle
+    elementType: text
+    bounds: [48, 86, 864, 22]
+    content: {style: "$subtitle", text: "同样管理前缀 KV，但前者把层级策略放在引擎内，后者把 CPU 缓存做成节点服务。"}
+  - elementId: left-title
+    elementType: text
+    bounds: [48, 122, 250, 26]
+    content: {style: "$section", color: "$accent", text: "HiCache / SGLang"}
+  - elementId: left-tag
+    elementType: text
+    bounds: [300, 127, 172, 18]
+    content: {style: "$small", align: [right, top], text: "引擎内多级缓存控制"}
+  - elementId: right-title
+    elementType: text
+    bounds: [496, 122, 250, 26]
+    content: {style: "$section", color: "$structural", text: "LMCache MP"}
+  - elementId: right-tag
+    elementType: text
+    bounds: [738, 127, 174, 18]
+    content: {style: "$small", align: [right, top], text: "节点级缓存服务"}
+  - elementId: divider
+    elementType: line
+    bounds: [480, 122, 1, 330]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: left-boundary
+    elementType: shape
+    bounds: [48, 156, 424, 196]
+    shapeName: rect
+    fill: {type: solid, color: "$white"}
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: right-boundary
+    elementType: shape
+    bounds: [496, 156, 416, 196]
+    shapeName: rect
+    fill: {type: solid, color: "$white"}
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: hc-tree
+    elementType: shape
+    bounds: [66, 178, 160, 50]
+    shapeName: rect
+    fill: {type: solid, color: "$accentLight"}
+    border: {style: solid, width: 1.2, color: "$accent"}
+  - elementId: hc-tree-text
+    elementType: text
+    bounds: [72, 184, 148, 38]
+    content: {style: "$node", align: [center, middle], text: "HiRadixTree\n前缀匹配＋驻留元数据"}
+  - elementId: hc-arrow
+    elementType: line
+    bounds: [226, 201, 28, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [null, stealth]
+    border: {style: solid, width: 1.4, color: "$accent"}
+  - elementId: hc-controller
+    elementType: shape
+    bounds: [254, 178, 200, 50]
+    shapeName: rect
+    fill: {type: solid, color: "$panel"}
+    border: {style: solid, width: 1, color: "$muted"}
+  - elementId: hc-controller-text
+    elementType: text
+    bounds: [260, 184, 188, 38]
+    content: {style: "$node", align: [center, middle], text: "HiCache Controller\nprefetch / backup / 生命周期"}
+  - elementId: hc-flow-label
+    elementType: text
+    bounds: [66, 236, 388, 18]
+    content: {style: "$small", align: [center, top], text: "本地最长前缀命中后，再按策略进行层级迁移"}
+  - elementId: hc-l1
+    elementType: shape
+    bounds: [66, 268, 106, 56]
+    shapeName: rect
+    fill: {type: solid, color: "$structuralLight"}
+    border: {style: solid, width: 1, color: "$structural"}
+  - elementId: hc-l1-text
+    elementType: text
+    bounds: [70, 274, 98, 44]
+    content: {style: "$node", align: [center, middle], text: "L1\nDevice HBM"}
+  - elementId: hc-l2
+    elementType: shape
+    bounds: [207, 268, 106, 56]
+    shapeName: rect
+    fill: {type: solid, color: "$structuralLight"}
+    border: {style: solid, width: 1, color: "$structural"}
+  - elementId: hc-l2-text
+    elementType: text
+    bounds: [211, 274, 98, 44]
+    content: {style: "$node", align: [center, middle], text: "L2\nHost DRAM"}
+  - elementId: hc-l3
+    elementType: shape
+    bounds: [348, 268, 106, 56]
+    shapeName: rect
+    fill: {type: solid, color: "$accentLight"}
+    border: {style: solid, width: 1, color: "$accent"}
+  - elementId: hc-l3-text
+    elementType: text
+    bounds: [352, 274, 98, 44]
+    content: {style: "$node", align: [center, middle], text: "L3\n可插拔后端"}
+  - elementId: hc-tier-arrow1
+    elementType: line
+    bounds: [172, 294, 35, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [stealth, stealth]
+    border: {style: solid, width: 1.2, color: "$muted"}
+  - elementId: hc-tier-arrow2
+    elementType: line
+    bounds: [313, 294, 35, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [stealth, stealth]
+    border: {style: solid, width: 1.2, color: "$muted"}
+  - elementId: lm-worker
+    elementType: shape
+    bounds: [512, 178, 124, 50]
+    shapeName: rect
+    fill: {type: solid, color: "$panel"}
+    border: {style: solid, width: 1, color: "$muted"}
+  - elementId: lm-worker-text
+    elementType: text
+    bounds: [518, 184, 112, 38]
+    content: {style: "$node", align: [center, middle], text: "推理 Worker\nHBM 由引擎管理"}
+  - elementId: lm-rpc
+    elementType: line
+    bounds: [636, 201, 44, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [stealth, stealth]
+    border: {style: solid, width: 1.2, color: "$structural"}
+  - elementId: lm-rpc-label
+    elementType: text
+    bounds: [634, 181, 48, 16]
+    content: {fontFamily: 微软雅黑, fontSize: 8, color: "$muted", align: [center, top], text: "ZMQ/gRPC"}
+  - elementId: lm-server
+    elementType: shape
+    bounds: [680, 178, 216, 50]
+    shapeName: rect
+    fill: {type: solid, color: "$structuralLight"}
+    border: {style: solid, width: 1.2, color: "$structural"}
+  - elementId: lm-server-text
+    elementType: text
+    bounds: [686, 184, 204, 38]
+    content: {style: "$node", align: [center, middle], text: "LMCache Server / StorageManager\n同节点多推理实例共享"}
+  - elementId: lm-flow-label
+    elementType: text
+    bounds: [512, 236, 384, 18]
+    content: {style: "$small", align: [center, top], text: "对象状态机＋TTL lock；控制器负责预取、写入与淘汰"}
+  - elementId: lm-hbm
+    elementType: shape
+    bounds: [512, 268, 106, 56]
+    shapeName: rect
+    fill: {type: solid, color: "$panel"}
+    border: {style: solid, width: 1, color: "$muted"}
+  - elementId: lm-hbm-text
+    elementType: text
+    bounds: [516, 274, 98, 44]
+    content: {style: "$node", align: [center, middle], text: "Engine\nHBM"}
+  - elementId: lm-l1
+    elementType: shape
+    bounds: [653, 268, 106, 56]
+    shapeName: rect
+    fill: {type: solid, color: "$structuralLight"}
+    border: {style: solid, width: 1, color: "$structural"}
+  - elementId: lm-l1-text
+    elementType: text
+    bounds: [657, 274, 98, 44]
+    content: {style: "$node", align: [center, middle], text: "LMCache L1\nCPU DRAM"}
+  - elementId: lm-l2
+    elementType: shape
+    bounds: [794, 268, 102, 56]
+    shapeName: rect
+    fill: {type: solid, color: "$accentLight"}
+    border: {style: solid, width: 1, color: "$accent"}
+  - elementId: lm-l2-text
+    elementType: text
+    bounds: [798, 274, 94, 44]
+    content: {style: "$node", align: [center, middle], text: "L2 Adapters\n持久存储"}
+  - elementId: lm-tier-arrow1
+    elementType: line
+    bounds: [618, 294, 35, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [stealth, stealth]
+    border: {style: solid, width: 1.2, color: "$muted"}
+  - elementId: lm-tier-arrow2
+    elementType: line
+    bounds: [759, 294, 35, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [stealth, stealth]
+    border: {style: solid, width: 1.2, color: "$muted"}
+  - elementId: left-bullets
+    elementType: text
+    bounds: [48, 368, 424, 82]
+    content:
+      style: "$body"
+      text: |
+        <p><strong>共享域</strong>　L1／L2 推理实例私有；L3 可全局共享</p>
+        <p style="margin-top:7px"><strong>算法</strong>　RadixTree 前缀路径；叶淘汰；三种写入策略</p>
+        <p style="margin-top:7px"><strong>改造入口</strong>　驻留树、Controller、Host Pool</p>
+  - elementId: right-bullets
+    elementType: text
+    bounds: [496, 368, 416, 82]
+    content:
+      style: "$body"
+      text: |
+        <p><strong>共享域</strong>　CPU DRAM 节点共享；跨机可读对端 DRAM</p>
+        <p style="margin-top:7px"><strong>算法</strong>　前序 hash-chain；对象水位 LRU／ARC</p>
+        <p style="margin-top:7px"><strong>改造入口</strong>　StorageManager、L1Manager、传输模块</p>
+  - elementId: takeaway-rule
+    elementType: shape
+    bounds: [48, 464, 4, 34]
+    shapeName: rect
+    fill: {type: solid, color: "$accent"}
+  - elementId: takeaway
+    elementType: text
+    bounds: [64, 462, 848, 40]
+    content: {fontFamily: 微软雅黑, fontSize: 13, color: "$ink", lineHeight: 1.3, align: [left, middle], text: "对 HHM 的意义：需要修改的是引擎内的驻留树、淘汰位置与 forward 数据路径；HiCache 已提供这套控制面的骨架。"}
+  - elementId: sources
+    elementType: text
+    bounds: [48, 511, 820, 16]
+    content:
+      fontFamily: 微软雅黑
+      fontSize: 7.5
+      color: "$faint"
+      text: |
+        <p>来源（2026-11 检索）：<a href="https://docs.sglang.ai/advanced_features/hicache_design.html">SGLang HiCache Design</a>；<a href="https://docs.lmcache.ai/mp/index.html">LMCache MP Architecture</a>。LMCache 的 L1／L2 命名已映射到本页文字说明。</p>
+  - elementId: page-no
+    elementType: text
+    bounds: [886, 510, 26, 16]
+    content: {fontFamily: 微软雅黑, fontSize: 8, color: "$faint", align: [right, top], text: "01"}

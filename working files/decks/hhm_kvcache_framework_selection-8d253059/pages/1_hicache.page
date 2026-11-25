@@ -1,0 +1,183 @@
+pageType: content
+background: {type: solid, color: "$bg"}
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [48, 22, 650, 16]
+    content: {fontFamily: 微软雅黑, fontSize: 9, color: "$structural", bold: true, letterSpacing: 1.1, text: "HHM KVCACHE · 框架架构 01/05"}
+  - elementId: title
+    elementType: text
+    bounds: [48, 44, 864, 34]
+    content: {style: "$title", text: "HiCache：引擎内的前缀树缓存控制面"}
+  - elementId: subtitle
+    elementType: text
+    bounds: [48, 84, 864, 22]
+    content: {style: "$subtitle", text: "核心不是增加一层存储，而是把最长前缀匹配、分层驻留与迁移策略绑定到推理引擎。"}
+  - elementId: section-title
+    elementType: text
+    bounds: [48, 118, 560, 24]
+    content: {style: "$section", fontSize: 17, color: "$structural", text: "核心架构｜前缀如何匹配、驻留和迁移"}
+  - elementId: section-tag
+    elementType: text
+    bounds: [650, 123, 262, 16]
+    content: {style: "$small", align: [right, top], text: "控制面位于推理引擎内部"}
+  - elementId: panel
+    elementType: shape
+    bounds: [48, 150, 864, 204]
+    shapeName: rect
+    fill: {type: solid, color: "$white"}
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: engine
+    elementType: shape
+    bounds: [64, 174, 190, 56]
+    shapeName: rect
+    fill: {type: solid, color: "$panel"}
+    border: {style: solid, width: 1, color: "$muted"}
+  - elementId: engine-text
+    elementType: text
+    bounds: [70, 180, 178, 44]
+    content: {style: "$node", align: [center, middle], text: "Scheduler / Worker\n请求调度与 forward 路径"}
+  - elementId: arrow1
+    elementType: line
+    bounds: [254, 200, 40, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [null, stealth]
+    border: {style: solid, width: 1.3, color: "$structural"}
+  - elementId: tree
+    elementType: shape
+    bounds: [294, 174, 190, 56]
+    shapeName: rect
+    fill: {type: solid, color: "$structuralLight"}
+    border: {style: solid, width: 1.2, color: "$structural"}
+  - elementId: tree-text
+    elementType: text
+    bounds: [300, 180, 178, 44]
+    content: {style: "$node", align: [center, middle], text: "HiRadixTree\n最长前缀＋驻留元数据"}
+  - elementId: arrow2
+    elementType: line
+    bounds: [484, 200, 40, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [null, stealth]
+    border: {style: solid, width: 1.3, color: "$structural"}
+  - elementId: controller
+    elementType: shape
+    bounds: [524, 174, 190, 56]
+    shapeName: rect
+    fill: {type: solid, color: "$structuralLight"}
+    border: {style: solid, width: 1.2, color: "$structural"}
+  - elementId: controller-text
+    elementType: text
+    bounds: [530, 180, 178, 44]
+    content: {style: "$node", align: [center, middle], text: "HiCache Controller\nprefetch / backup / 生命周期"}
+  - elementId: control-note
+    elementType: text
+    bounds: [730, 181, 150, 42]
+    content: {style: "$small", align: [left, middle], text: "策略与数据路径\n都在引擎控制之下"}
+  - elementId: l1
+    elementType: shape
+    bounds: [64, 276, 240, 52]
+    shapeName: rect
+    fill: {type: solid, color: "$panel"}
+    border: {style: solid, width: 1, color: "$structural"}
+  - elementId: l1-text
+    elementType: text
+    bounds: [70, 282, 228, 40]
+    content: {style: "$node", align: [center, middle], text: "L1 · Device HBM\n推理实例私有"}
+  - elementId: tier-arrow1
+    elementType: line
+    bounds: [304, 300, 56, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [stealth, stealth]
+    border: {style: solid, width: 1.2, color: "$muted"}
+  - elementId: l2
+    elementType: shape
+    bounds: [360, 276, 240, 52]
+    shapeName: rect
+    fill: {type: solid, color: "$panel"}
+    border: {style: solid, width: 1, color: "$structural"}
+  - elementId: l2-text
+    elementType: text
+    bounds: [366, 282, 228, 40]
+    content: {style: "$node", align: [center, middle], text: "L2 · Host DRAM\n推理实例私有"}
+  - elementId: tier-arrow2
+    elementType: line
+    bounds: [600, 300, 56, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [stealth, stealth]
+    border: {style: solid, width: 1.2, color: "$muted"}
+  - elementId: l3
+    elementType: shape
+    bounds: [656, 276, 224, 52]
+    shapeName: rect
+    fill: {type: solid, color: "$structuralLight"}
+    border: {style: solid, width: 1, color: "$structural"}
+  - elementId: l3-text
+    elementType: text
+    bounds: [662, 282, 212, 40]
+    content: {style: "$node", align: [center, middle], text: "L3 · 可插拔后端\n可跨实例共享"}
+  - elementId: tier-note
+    elementType: text
+    bounds: [64, 248, 816, 16]
+    content: {style: "$small", align: [center, top], text: "本地前缀命中之后，再按写入与迁移策略在层级间移动 KV"}
+  - elementId: share-head
+    elementType: text
+    bounds: [48, 372, 272, 18]
+    content: {fontFamily: 微软雅黑, fontSize: 11, bold: true, color: "$structural", text: "共享域"}
+  - elementId: share-text
+    elementType: text
+    bounds: [48, 396, 272, 58]
+    content: {fontFamily: 微软雅黑, fontSize: 11, color: "$ink", lineHeight: 1.3, text: "L1／L2 随推理实例私有；跨实例复用交给 L3，而不是直接读取其他实例的本地缓存。"}
+  - elementId: divider1
+    elementType: line
+    bounds: [324, 372, 1, 78]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: algo-head
+    elementType: text
+    bounds: [344, 372, 272, 18]
+    content: {fontFamily: 微软雅黑, fontSize: 11, bold: true, color: "$structural", text: "对象与算法"}
+  - elementId: algo-text
+    elementType: text
+    bounds: [344, 396, 272, 58]
+    content: {fontFamily: 微软雅黑, fontSize: 11, color: "$ink", lineHeight: 1.3, text: "RadixTree 节点记录驻留层；叶向根回收；支持 write-through、selective 与 write-back。"}
+  - elementId: divider2
+    elementType: line
+    bounds: [620, 372, 1, 78]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: boundary-head
+    elementType: text
+    bounds: [640, 372, 272, 18]
+    content: {fontFamily: 微软雅黑, fontSize: 11, bold: true, color: "$structural", text: "独特边界"}
+  - elementId: boundary-text
+    elementType: text
+    bounds: [640, 396, 272, 58]
+    content: {fontFamily: 微软雅黑, fontSize: 11, color: "$ink", lineHeight: 1.3, text: "决定前缀在哪里、何时迁移；不是全局副本目录，也不负责统一跨机内存传输。"}
+  - elementId: takeaway-rule
+    elementType: shape
+    bounds: [48, 464, 4, 32]
+    shapeName: rect
+    fill: {type: solid, color: "$structural"}
+  - elementId: takeaway
+    elementType: text
+    bounds: [64, 460, 848, 40]
+    content: {fontFamily: 微软雅黑, fontSize: 12.5, color: "$ink", lineHeight: 1.3, align: [left, middle], text: "差异关键词：前缀驻留策略内生于引擎，控制粒度一直延伸到请求调度和 forward 数据路径。"}
+  - elementId: sources
+    elementType: text
+    bounds: [48, 511, 820, 16]
+    content:
+      fontFamily: 微软雅黑
+      fontSize: 7.5
+      color: "$faint"
+      text: |
+        <p>来源（2026-11 检索）：<a href="https://docs.sglang.ai/advanced_features/hicache_design.html">SGLang HiCache Design</a>。本页聚焦其多级缓存控制面，不展开具体后端实现。</p>
+  - elementId: page-no
+    elementType: text
+    bounds: [886, 510, 26, 16]
+    content: {fontFamily: 微软雅黑, fontSize: 8, color: "$faint", align: [right, top], text: "01"}

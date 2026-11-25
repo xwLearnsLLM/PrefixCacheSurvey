@@ -1,0 +1,68 @@
+version: v2
+title: KV Cache 软件职责图
+size: [1920, 1200]
+theme:
+  colors:
+    background: "#F5F2EC"
+    surface: "#FCFBF8"
+    surfaceAlt: "#F0F3F1"
+    ink: "#1F2D2A"
+    muted: "#66736F"
+    primary: "#173E38"
+    managed: "#19705B"
+    integrated: "#A86622"
+    dataplane: "#52748C"
+    unsupported: "#8B918E"
+    grid: "#CBD3CE"
+  textStyles:
+    title:
+      fontSize: 44
+      fontFamily: 微软雅黑
+      color: "$ink"
+      bold: true
+      letterSpacing: -1
+    subtitle:
+      fontSize: 19
+      fontFamily: 微软雅黑
+      color: "$muted"
+      lineHeight: 1.25
+    body:
+      fontSize: 15
+      fontFamily: 微软雅黑
+      color: "$ink"
+      lineHeight: 1.16
+    small:
+      fontSize: 13
+      fontFamily: 微软雅黑
+      color: "$muted"
+      lineHeight: 1.25
+  tableStyles:
+    matrix:
+      cellStyle:
+        fontSize: 15
+        fontFamily: 微软雅黑
+        color: "$ink"
+        lineHeight: 1.16
+        fill: {type: solid, color: "$surface"}
+        border: {style: solid, width: 0.8, color: "$grid"}
+        align: [left, middle]
+      firstRowStyle:
+        fontSize: 18
+        bold: true
+        color: "#FFFFFF"
+        lineHeight: 1.15
+        fill: {type: solid, color: "$primary"}
+        align: [center, middle]
+      firstColumnStyle:
+        fontSize: 17
+        bold: true
+        color: "$ink"
+        lineHeight: 1.25
+        fill: {type: solid, color: "#E4EAE6"}
+        align: [center, middle]
+      bodyStyles:
+        - fill: {type: solid, color: "$surface"}
+        - fill: {type: solid, color: "$surfaceAlt"}
+      rowOverColumn: true
+pages:
+  - pages/1_matrix.page

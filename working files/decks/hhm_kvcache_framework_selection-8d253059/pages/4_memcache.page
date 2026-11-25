@@ -1,0 +1,158 @@
+pageType: content
+background: {type: solid, color: "$bg"}
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [48, 22, 650, 16]
+    content: {fontFamily: 微软雅黑, fontSize: 9, color: "$structural", bold: true, letterSpacing: 1.1, text: "HHM KVCACHE · 框架架构 04/05"}
+  - elementId: title
+    elementType: text
+    bounds: [48, 44, 864, 34]
+    content: {style: "$title", fontSize: 25, text: "MemCache＋MemFabric：昇腾对象池与统一内存访问"}
+  - elementId: subtitle
+    elementType: text
+    bounds: [48, 84, 864, 22]
+    content: {style: "$subtitle", text: "MemCache 组织分布式 KV 对象，MemFabric 屏蔽本地／远端、主机／设备内存的访问与搬运路径。"}
+  - elementId: section-title
+    elementType: text
+    bounds: [48, 118, 590, 24]
+    content: {style: "$section", fontSize: 17, color: "$structural", text: "核心架构｜KV 对象池与昇腾跨机、跨介质数据通路"}
+  - elementId: section-tag
+    elementType: text
+    bounds: [680, 123, 232, 16]
+    content: {style: "$small", align: [right, top], text: "对象管理与内存传输协同"}
+  - elementId: panel
+    elementType: shape
+    bounds: [48, 150, 864, 204]
+    shapeName: rect
+    fill: {type: solid, color: "$white"}
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: meta
+    elementType: shape
+    bounds: [320, 164, 320, 52]
+    shapeName: rect
+    fill: {type: solid, color: "$structuralLight"}
+    border: {style: solid, width: 1.2, color: "$structural"}
+  - elementId: meta-text
+    elementType: text
+    bounds: [330, 170, 300, 40]
+    content: {style: "$node", align: [center, middle], text: "MemCache · MetaService\n内存池分配 / 节点管理 / 高可用"}
+  - elementId: control-stem
+    elementType: line
+    bounds: [479, 216, 2, 18]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    border: {style: dash, width: 1, color: "$muted"}
+  - elementId: control-bar
+    elementType: line
+    bounds: [244, 234, 472, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    border: {style: dash, width: 1, color: "$muted"}
+  - elementId: control-left
+    elementType: line
+    bounds: [243, 235, 2, 15]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    arrow: [null, stealth]
+    border: {style: dash, width: 1, color: "$muted"}
+  - elementId: control-right
+    elementType: line
+    bounds: [715, 235, 2, 15]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    arrow: [null, stealth]
+    border: {style: dash, width: 1, color: "$muted"}
+  - elementId: local-a
+    elementType: shape
+    bounds: [64, 250, 360, 76]
+    shapeName: rect
+    fill: {type: solid, color: "$panel"}
+    border: {style: solid, width: 1, color: "$structural"}
+  - elementId: local-a-text
+    elementType: text
+    bounds: [74, 256, 340, 64]
+    content: {style: "$node", align: [center, middle], text: "LocalService A\nClient API＋节点 KV Block 对象池\n多层 KV / 多副本 / 动态扩缩容"}
+  - elementId: local-b
+    elementType: shape
+    bounds: [536, 250, 360, 76]
+    shapeName: rect
+    fill: {type: solid, color: "$panel"}
+    border: {style: solid, width: 1, color: "$structural"}
+  - elementId: local-b-text
+    elementType: text
+    bounds: [546, 256, 340, 64]
+    content: {style: "$node", align: [center, middle], text: "LocalService B\nClient API＋节点 KV Block 对象池\n本地与远端内存统一访问"}
+  - elementId: data-plane
+    elementType: line
+    bounds: [424, 286, 112, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [stealth, stealth]
+    border: {style: solid, width: 1.5, color: "$structural"}
+  - elementId: data-label
+    elementType: text
+    bounds: [424, 260, 112, 18]
+    content: {fontFamily: 微软雅黑, fontSize: 9, color: "$structural", align: [center, top], text: "MemFabric"}
+  - elementId: data-note
+    elementType: text
+    bounds: [256, 334, 448, 14]
+    content: {fontFamily: 微软雅黑, fontSize: 8.5, color: "$muted", align: [center, top], text: "OneCopy · host_shm / RDMA / SDMA · 本地与远端、主机与设备"}
+  - elementId: share-head
+    elementType: text
+    bounds: [48, 372, 272, 18]
+    content: {fontFamily: 微软雅黑, fontSize: 11, bold: true, color: "$structural", text: "共享域"}
+  - elementId: share-text
+    elementType: text
+    bounds: [48, 396, 272, 58]
+    content: {fontFamily: 微软雅黑, fontSize: 11, color: "$ink", lineHeight: 1.3, text: "MetaService＋LocalService 将各节点 DRAM 组织为分布式 KV 对象池，支持扩缩容与多副本。"}
+  - elementId: divider1
+    elementType: line
+    bounds: [324, 372, 1, 78]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: algo-head
+    elementType: text
+    bounds: [344, 372, 272, 18]
+    content: {fontFamily: 微软雅黑, fontSize: 11, bold: true, color: "$structural", text: "对象与算法"}
+  - elementId: algo-text
+    elementType: text
+    bounds: [344, 396, 272, 58]
+    content: {fontFamily: 微软雅黑, fontSize: 11, color: "$ink", lineHeight: 1.3, text: "put／get／exist／remove；管理多层 KV Block；MemFabric 统一内存描述并选择传输路径。"}
+  - elementId: divider2
+    elementType: line
+    bounds: [620, 372, 1, 78]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: boundary-head
+    elementType: text
+    bounds: [640, 372, 272, 18]
+    content: {fontFamily: 微软雅黑, fontSize: 11, bold: true, color: "$structural", text: "独特边界"}
+  - elementId: boundary-text
+    elementType: text
+    bounds: [640, 396, 272, 58]
+    content: {fontFamily: 微软雅黑, fontSize: 11, color: "$ink", lineHeight: 1.3, text: "最接近 ASU 与昇腾数据面；不是硬件一致性共享虚拟内存，也不自带完整前缀控制面。"}
+  - elementId: takeaway-rule
+    elementType: shape
+    bounds: [48, 464, 4, 32]
+    shapeName: rect
+    fill: {type: solid, color: "$structural"}
+  - elementId: takeaway
+    elementType: text
+    bounds: [64, 460, 848, 40]
+    content: {fontFamily: 微软雅黑, fontSize: 12.5, color: "$ink", lineHeight: 1.3, align: [left, middle], text: "差异关键词：优先解决 KV 对象池和跨介质数据通路；“统一访问”包含实际传输，不等于无拷贝共享内存。"}
+  - elementId: sources
+    elementType: text
+    bounds: [48, 511, 820, 16]
+    content:
+      fontFamily: 微软雅黑
+      fontSize: 7.5
+      color: "$faint"
+      text: |
+        <p>来源（2026-11 检索）：<a href="https://github.com/Ascend/memcache">Ascend MemCache README</a> 与项目内 MemFabric 架构说明。MemFabric 在图中作为数据访问与传输层单独标出。</p>
+  - elementId: page-no
+    elementType: text
+    bounds: [886, 510, 26, 16]
+    content: {fontFamily: 微软雅黑, fontSize: 8, color: "$faint", align: [right, top], text: "04"}

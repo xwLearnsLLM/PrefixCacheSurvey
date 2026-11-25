@@ -1,0 +1,223 @@
+pageType: content
+background: {type: solid, color: "$bg"}
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [48, 22, 650, 16]
+    content: {fontFamily: 微软雅黑, fontSize: 9, color: "$structural", bold: true, letterSpacing: 1.1, text: "HHM KVCACHE · 技术选型 02/03"}
+  - elementId: title
+    elementType: text
+    bounds: [48, 44, 864, 36]
+    content: {style: "$title", text: "Mooncake 与 MemCache＋MemFabric：全局对象池与数据面"}
+  - elementId: subtitle
+    elementType: text
+    bounds: [48, 86, 864, 22]
+    content: {style: "$subtitle", text: "两者都把元数据与数据传输解耦；差异主要在副本生态与昇腾跨机、跨介质访问路径。"}
+  - elementId: left-title
+    elementType: text
+    bounds: [48, 122, 260, 26]
+    content: {style: "$section", color: "$accent", text: "Mooncake Store"}
+  - elementId: left-tag
+    elementType: text
+    bounds: [300, 127, 172, 18]
+    content: {style: "$small", align: [right, top], text: "全局副本池＋租约"}
+  - elementId: right-title
+    elementType: text
+    bounds: [496, 122, 310, 26]
+    content: {style: "$section", color: "$structural", text: "MemCache＋MemFabric"}
+  - elementId: right-tag
+    elementType: text
+    bounds: [756, 127, 156, 18]
+    content: {style: "$small", align: [right, top], text: "昇腾原生数据面"}
+  - elementId: divider
+    elementType: line
+    bounds: [480, 122, 1, 330]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: left-boundary
+    elementType: shape
+    bounds: [48, 156, 424, 196]
+    shapeName: rect
+    fill: {type: solid, color: "$white"}
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: right-boundary
+    elementType: shape
+    bounds: [496, 156, 416, 196]
+    shapeName: rect
+    fill: {type: solid, color: "$white"}
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: mc-master
+    elementType: shape
+    bounds: [146, 172, 228, 50]
+    shapeName: rect
+    fill: {type: solid, color: "$accentLight"}
+    border: {style: solid, width: 1.2, color: "$accent"}
+  - elementId: mc-master-text
+    elementType: text
+    bounds: [152, 178, 216, 38]
+    content: {style: "$node", align: [center, middle], text: "Master Service\n对象目录 / 分配 / lease / 淘汰"}
+  - elementId: mc-control-stem
+    elementType: line
+    bounds: [259, 222, 2, 18]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    border: {style: dash, width: 1, color: "$muted"}
+  - elementId: mc-control-bar
+    elementType: line
+    bounds: [146, 239, 228, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    border: {style: dash, width: 1, color: "$muted"}
+  - elementId: mc-control-left
+    elementType: line
+    bounds: [145, 240, 2, 24]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    arrow: [null, stealth]
+    border: {style: dash, width: 1, color: "$muted"}
+  - elementId: mc-control-right
+    elementType: line
+    bounds: [373, 240, 2, 24]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    arrow: [null, stealth]
+    border: {style: dash, width: 1, color: "$muted"}
+  - elementId: mc-client1
+    elementType: shape
+    bounds: [66, 264, 160, 62]
+    shapeName: rect
+    fill: {type: solid, color: "$structuralLight"}
+    border: {style: solid, width: 1, color: "$structural"}
+  - elementId: mc-client1-text
+    elementType: text
+    bounds: [72, 270, 148, 50]
+    content: {style: "$node", align: [center, middle], text: "Client A\n请求方＋内存提供者\nDRAM / SSD Segment"}
+  - elementId: mc-client2
+    elementType: shape
+    bounds: [294, 264, 160, 62]
+    shapeName: rect
+    fill: {type: solid, color: "$structuralLight"}
+    border: {style: solid, width: 1, color: "$structural"}
+  - elementId: mc-client2-text
+    elementType: text
+    bounds: [300, 270, 148, 50]
+    content: {style: "$node", align: [center, middle], text: "Client B\n请求方＋内存提供者\nDRAM / SSD Segment"}
+  - elementId: mc-data
+    elementType: line
+    bounds: [226, 291, 68, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [stealth, stealth]
+    border: {style: solid, width: 1.5, color: "$structural"}
+  - elementId: mc-data-label
+    elementType: text
+    bounds: [66, 330, 388, 16]
+    content: {fontFamily: 微软雅黑, fontSize: 8.5, color: "$structural", align: [center, top], text: "数据面：Client ↔ Client，Transfer Engine 绕过 Master"}
+  - elementId: mm-meta
+    elementType: shape
+    bounds: [590, 172, 228, 50]
+    shapeName: rect
+    fill: {type: solid, color: "$accentLight"}
+    border: {style: solid, width: 1.2, color: "$accent"}
+  - elementId: mm-meta-text
+    elementType: text
+    bounds: [596, 178, 216, 38]
+    content: {style: "$node", align: [center, middle], text: "MetaService\n内存池分配 / 节点管理 / HA"}
+  - elementId: mm-control-stem
+    elementType: line
+    bounds: [703, 222, 2, 18]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    border: {style: dash, width: 1, color: "$muted"}
+  - elementId: mm-control-bar
+    elementType: line
+    bounds: [590, 239, 228, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    border: {style: dash, width: 1, color: "$muted"}
+  - elementId: mm-control-left
+    elementType: line
+    bounds: [589, 240, 2, 24]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    arrow: [null, stealth]
+    border: {style: dash, width: 1, color: "$muted"}
+  - elementId: mm-control-right
+    elementType: line
+    bounds: [817, 240, 2, 24]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    arrow: [null, stealth]
+    border: {style: dash, width: 1, color: "$muted"}
+  - elementId: mm-local1
+    elementType: shape
+    bounds: [512, 264, 156, 62]
+    shapeName: rect
+    fill: {type: solid, color: "$structuralLight"}
+    border: {style: solid, width: 1, color: "$structural"}
+  - elementId: mm-local1-text
+    elementType: text
+    bounds: [518, 270, 144, 50]
+    content: {style: "$node", align: [center, middle], text: "LocalService A\nClient API＋内存提供者\n多层 KV Block"}
+  - elementId: mm-local2
+    elementType: shape
+    bounds: [740, 264, 156, 62]
+    shapeName: rect
+    fill: {type: solid, color: "$structuralLight"}
+    border: {style: solid, width: 1, color: "$structural"}
+  - elementId: mm-local2-text
+    elementType: text
+    bounds: [746, 270, 144, 50]
+    content: {style: "$node", align: [center, middle], text: "LocalService B\nClient API＋内存提供者\n分布式内存池"}
+  - elementId: mm-data
+    elementType: line
+    bounds: [668, 291, 72, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [stealth, stealth]
+    border: {style: solid, width: 1.5, color: "$structural"}
+  - elementId: mm-data-label
+    elementType: text
+    bounds: [512, 330, 384, 16]
+    content: {fontFamily: 微软雅黑, fontSize: 8.5, color: "$structural", align: [center, top], text: "数据面：MemFabric OneCopy（host_shm／RDMA／SDMA）"}
+  - elementId: left-bullets
+    elementType: text
+    bounds: [48, 368, 424, 82]
+    content:
+      style: "$body"
+      text: |
+        <p><strong>对象模型</strong>　Put／Get／Remove；多副本；可选对象组</p>
+        <p style="margin-top:7px"><strong>生命周期</strong>　lease／pin 保护；DRAM 可向 SSD offload</p>
+        <p style="margin-top:7px"><strong>适合复用</strong>　通用全局副本池、跨引擎数据面</p>
+  - elementId: right-bullets
+    elementType: text
+    bounds: [496, 368, 416, 82]
+    content:
+      style: "$body"
+      text: |
+        <p><strong>对象模型</strong>　put／get／exist／remove；多副本；动态扩缩容</p>
+        <p style="margin-top:7px"><strong>硬件路径</strong>　NPU／主机内存跨机跨介质 OneCopy</p>
+        <p style="margin-top:7px"><strong>适合复用</strong>　ASU 对象池与昇腾数据传输，而非前缀控制面</p>
+  - elementId: takeaway-rule
+    elementType: shape
+    bounds: [48, 464, 4, 34]
+    shapeName: rect
+    fill: {type: solid, color: "$accent"}
+  - elementId: takeaway
+    elementType: text
+    bounds: [64, 462, 848, 40]
+    content: {fontFamily: 微软雅黑, fontSize: 13, color: "$ink", lineHeight: 1.3, align: [left, middle], text: "共同边界：它们都不知道 HHM 的本地 D／H 驻留前沿。若单独作为基座，前缀匹配、稳定热准入与树淘汰仍需重新建设。"}
+  - elementId: sources
+    elementType: text
+    bounds: [48, 511, 820, 16]
+    content:
+      fontFamily: 微软雅黑
+      fontSize: 7.5
+      color: "$faint"
+      text: |
+        <p>来源（2026-11 检索）：<a href="https://github.com/kvcache-ai/Mooncake/blob/main/docs/source/design/store/mooncake-store.md">Mooncake Store Design</a>；<a href="https://github.com/Ascend/memcache">Ascend MemCache README</a>。</p>
+  - elementId: page-no
+    elementType: text
+    bounds: [886, 510, 26, 16]
+    content: {fontFamily: 微软雅黑, fontSize: 8, color: "$faint", align: [right, top], text: "02"}

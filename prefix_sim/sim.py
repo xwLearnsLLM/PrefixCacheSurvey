@@ -52,31 +52,33 @@ ITL_MS = _make_itl()
 
 @dataclass
 class Cfg:
-    machines: int = 4
-    ranks: int = 8                       # 每机 DP rank 数
-    l1_gb_per_rank: float = 4096.0       # "每机 32TB" / 8 卡（字面默认，可调）
-    l2_gb_per_machine: float = 2048.0    # 每机 2TB
-    l3_gb: float = 262144.0              # 全局 256TB
-    kv_bytes_per_token: float = 105 * 1024   # K3.1 Pro MLA 量级
-    chunk_tokens: int = 256
-    max_batched_tokens: int = 8192
-    prefill_tps: float = 10000.0         # 每机 prefill tokens/s
-    max_decode_bs: int = 32
-    mtp_probs: tuple = (0.5, 0.25, 0.15, 0.10)   # P(吐1/2/3/4 token)
-    agents: int = 4500
-    hours: float = 3.0
-    turns_mean: float = 8.0
-    turns_max: int = 128
-    prefill_len_mean: float = 4096.0
-    decode_len_mean: float = 512.0
-    think_mean_s: float = 600.0
-    think_dist: str = "exponential"    # poisson | exponential（指数分布去同步效应更真实）
-    bucket_s: float = 60.0
-    seed: int = 42
-    out: str = "out"
-    sched_decode_weight: float = 1.0   # 调度 decode 感知权重：est += w * rank积压tok/rank解码速率
-    decode_tps_est: float = 604.5      # 每 rank decode 满 batch 吞吐估计 (32 seq * 1.85 tok / 97.9ms)
-    write_policy: str = "write_through"  # write_through: 新chunk立即写L1/L2/L3 | write_back: 仅写L1，L1淘汰时才级联写L2→L3 | write_selective: 仅写L1，被再次命中时才写穿L2/L3
+    machines: int = 4                    # 机器（EP 域）数量，每机为一个独立的 prefill/decode 执行单元
+    ranks: int = 8                       # 每机 DP rank 数（每 rank 对应 1 张 NPU，机内 forward 同步）
+    l1_gb_per_rank: float = 64.0         # L1 容量：每卡 HBM，单位 GB（64GB ≈ 59.5 万 token）
+    l2_gb_per_machine: float = 2048.0    # L2 容量：每机共享 DRAM，单位 GB（默认 2TB/机）
+    l3_gb: float = 262144.0              # L3 容量：全局共享存储（ASU/SSD 层），单位 GB（默认 256TB）
+    kv_bytes_per_token: float = 105 * 1024   # 每 token 的 KVcache 字节数（105KB，K3.1 Pro MLA 量级）
+    chunk_tokens: int = 256              # 缓存块粒度：每 chunk 包含的 token 数，只缓存完整 chunk
+    max_batched_tokens: int = 8192       # chunked prefill 每步最多计算的 token 数
+    prefill_tps: float = 10000.0         # 每机 prefill 吞吐，单位 token/s（miss 部分的计算速率）
+    max_decode_bs: int = 32              # 每 rank decode 最大 batch size，超出进等待队列 dwait
+    mtp_probs: tuple = (0.5, 0.25, 0.15, 0.10)   # MTP3 每步吐出 1/2/3/4 个 token 的概率（均值 1.85）
+    agents: int = 4000                   # 用户（agent）总数；默认开启补充机制，人口恒定。4000 是 64GB/卡下的稳态工作点（4500 以上会亚稳态后崩溃）
+    hours: float = 6.0                   # 仿真时长，单位小时
+    turns_mean: float = 8.0              # 每用户对话轮数的几何分布均值
+    turns_max: int = 32                  # 每用户对话轮数上限（截断长尾，防止上下文无限增长）
+    prefill_len_mean: float = 4096.0     # 每轮新增输入长度的泊松分布均值（token），总 prompt = 历史 + 新增
+    decode_len_mean: float = 512.0       # 每轮输出长度的泊松分布均值（token）
+    think_mean_s: float = 600.0          # 用户思考时间均值（秒）：首轮到达与轮间间隔都服从该分布
+    think_dist: str = "exponential"    # 思考时间分布：poisson=泊松 | exponential=指数（去同步效应更真实）
+    bucket_s: float = 60.0               # 时间序列指标的聚合桶宽（秒），影响 metrics.png 曲线平滑度
+    seed: int = 42                       # 随机种子，固定后可复现实验
+    out: str = "out"                     # 输出目录：summary.json / series.json / metrics.png
+    sched_decode_weight: float = 1.0   # 调度 decode 感知权重：est += w * rank积压tok/rank解码速率；0=不看 decode 积压
+    sched_policy: str = "est"          # 调度策略：est=最小预估TTFT | affinity=总命中最高优先 | affinity_tier=分层亲和(L1>L2>L3)；并列均按est打散
+    decode_tps_est: float = 604.5      # 每 rank decode 满 batch 吞吐估计 (32 seq * 1.85 tok / 97.9ms)，供调度器换算积压时延
+    write_policy: str = "write_through"  # 写策略：write_through=新chunk立即写L1/L2/L3 | write_back=仅写L1，L1淘汰时级联写L2→L3 | write_selective=仅写L1，被再次命中时才写穿L2/L3
+    replenish: bool = True               # 恒定并发补充（默认开启）：用户用完轮数后以新身份重新进场（历史清零、轮数重采样），负载长度分布平稳
 
 
 # ---------------- 缓存层（LRU + per-agent chunk 计数） ----------------
@@ -284,7 +286,14 @@ class Sim:
                 miss = req.prompt - (h1 + h2 + h3) * self.CT
                 dec_pen = w * m.ranks[r].dec_left / c.decode_tps_est
                 est = (qt + miss) / tps + dec_pen   # 预估 TTFT：排队 + miss 计算 + rank decode 积压
-                key = (est, m.ranks[r].dec_left, len(m.q), m.mid, r)  # 并列时打散到空闲 rank
+                if c.sched_policy == "affinity":
+                    # 仅看 KVcache 亲和性：总命中 token 数最高者优先；并列时用 est 打散
+                    key = (-(h1 + h2 + h3), est, m.mid, r)
+                elif c.sched_policy == "affinity_tier":
+                    # 分层亲和性：L1 命中优先，其次 L2、L3；并列时用 est 打散
+                    key = (-h1, -h2, -h3, est, m.mid, r)
+                else:
+                    key = (est, m.ranks[r].dec_left, len(m.q), m.mid, r)  # 并列时打散到空闲 rank
                 if best is None or key < best[0]:
                     best = (key, m, r)
         _, m, r = best
@@ -292,6 +301,17 @@ class Sim:
         return m
 
     # ---------- 请求生命周期 ----------
+    def next_turn(self, ag, t):
+        """安排该用户的下一轮；开启 replenish 时，老会话结束即以新身份补位（历史清零）。"""
+        if ag.done < ag.turns:
+            self.push(t + self.think_time(), "A", ag.aid)
+        elif self.cfg.replenish:
+            c = self.cfg
+            ag.done = 0
+            ag.hist = 0
+            ag.turns = max(1, min(int(self.rng.geometric(1.0 / c.turns_mean)), c.turns_max))
+            self.push(t + self.think_time(), "A", ag.aid)
+
     def on_arrival(self, t, aid):
         ag = self.agents[aid]
         c = self.cfg
@@ -301,8 +321,7 @@ class Sim:
         if prompt + out > self.l1_cap_tokens:
             self.rejects += 1
             ag.done += 1                  # 拒服：本轮作废，进入下一轮等待
-            if ag.done < ag.turns:
-                self.push(t + self.think_time(), "A", aid)
+            self.next_turn(ag, t)
             return
         m = self.assign(req)
         m.q.append(req)
@@ -401,8 +420,7 @@ class Sim:
         ag = self.agents[req.aid]
         ag.hist = req.prompt + req.out
         ag.done += 1
-        if ag.done < ag.turns:
-            self.push(t + self.think_time(), "A", req.aid)
+        self.next_turn(ag, t)
         while rk.dwait and len(rk.decode) < self.cfg.max_decode_bs:
             rk.decode.append(rk.dwait.popleft())
 
@@ -540,7 +558,8 @@ def plot(series, summary, outdir):
 
     t = series["t_min"]
     fig, axes = plt.subplots(2, 3, figsize=(16, 8))
-    fig.suptitle("Prefix Cache Simulation (%s, PD-colocated)" % summary["config"]["write_policy"])
+    fig.suptitle("Prefix Cache Simulation (%s, sched=%s, PD-colocated)"
+                 % (summary["config"]["write_policy"], summary["config"]["sched_policy"]))
 
     ax = axes[0][0]
     ax.plot(t, series["hit_L1"], label="L1 HBM")
@@ -594,7 +613,7 @@ def main():
     p = argparse.ArgumentParser(description="多级前缀缓存仿真器")
     p.add_argument("--machines", type=int, default=4)
     p.add_argument("--ranks", type=int, default=8)
-    p.add_argument("--l1-gb-per-rank", type=float, default=4096.0)
+    p.add_argument("--l1-gb-per-rank", type=float, default=64.0)
     p.add_argument("--l2-gb-per-machine", type=float, default=2048.0)
     p.add_argument("--l3-gb", type=float, default=262144.0)
     p.add_argument("--kv-bytes-per-token", type=float, default=105 * 1024)
@@ -603,10 +622,10 @@ def main():
     p.add_argument("--prefill-tps", type=float, default=10000.0)
     p.add_argument("--max-decode-bs", type=int, default=32)
     p.add_argument("--mtp-probs", type=str, default="0.5,0.25,0.15,0.10")
-    p.add_argument("--agents", type=int, default=7000)
-    p.add_argument("--hours", type=float, default=3.0)
+    p.add_argument("--agents", type=int, default=4000)
+    p.add_argument("--hours", type=float, default=6.0)
     p.add_argument("--turns-mean", type=float, default=8.0)
-    p.add_argument("--turns-max", type=int, default=128)
+    p.add_argument("--turns-max", type=int, default=32)
     p.add_argument("--prefill-len-mean", type=float, default=4096.0)
     p.add_argument("--decode-len-mean", type=float, default=512.0)
     p.add_argument("--think-mean-s", type=float, default=600.0)
@@ -617,7 +636,11 @@ def main():
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--sched-decode-weight", type=float, default=1.0,
                    help="调度器感知 decode 积压的强度：est += w * rank积压tok/rank解码速率；0=纯规格书基线")
+    p.add_argument("--sched-policy", type=str, default="est", choices=["est", "affinity", "affinity_tier"],
+                   help="est=最小预估TTFT；affinity=总命中最高优先；affinity_tier=分层亲和(L1>L2>L3)；并列均按est打散")
     p.add_argument("--out", type=str, default="out")
+    p.add_argument("--replenish", action=argparse.BooleanOptionalAction, default=True,
+                   help="恒定并发补充（默认开启）：用户用完轮数后以新身份重新进场（历史清零），负载长度分布平稳；--no-replenish 回到封闭cohort")
     a = p.parse_args()
 
     cfg = Cfg(
@@ -631,6 +654,7 @@ def main():
         prefill_len_mean=a.prefill_len_mean, decode_len_mean=a.decode_len_mean,
         think_mean_s=a.think_mean_s, think_dist=a.think_dist, seed=a.seed, out=a.out,
         sched_decode_weight=a.sched_decode_weight, write_policy=a.write_policy,
+        sched_policy=a.sched_policy, replenish=a.replenish,
     )
     os.makedirs(cfg.out, exist_ok=True)
     sim = Sim(cfg)

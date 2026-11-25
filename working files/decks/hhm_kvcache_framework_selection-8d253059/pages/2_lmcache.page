@@ -1,0 +1,199 @@
+pageType: content
+background: {type: solid, color: "$bg"}
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [48, 22, 650, 16]
+    content: {fontFamily: 微软雅黑, fontSize: 9, color: "$structural", bold: true, letterSpacing: 1.1, text: "HHM KVCACHE · 框架架构 02/05"}
+  - elementId: title
+    elementType: text
+    bounds: [48, 44, 864, 34]
+    content: {style: "$title", text: "LMCache MP：节点共享的 KV 对象缓存服务"}
+  - elementId: subtitle
+    elementType: text
+    bounds: [48, 84, 864, 22]
+    content: {style: "$subtitle", text: "把 CPU 缓存从推理进程剥离，由独立 Server 统一对象、锁与容量；持久层和 P2P 是外部数据通路。"}
+  - elementId: section-title
+    elementType: text
+    bounds: [48, 118, 560, 24]
+    content: {style: "$section", fontSize: 17, color: "$structural", text: "核心架构｜节点级共享对象及其服务生命周期"}
+  - elementId: section-tag
+    elementType: text
+    bounds: [650, 123, 262, 16]
+    content: {style: "$small", align: [right, top], text: "缓存服务与推理进程隔离"}
+  - elementId: panel
+    elementType: shape
+    bounds: [48, 150, 864, 204]
+    shapeName: rect
+    fill: {type: solid, color: "$white"}
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: worker-a
+    elementType: shape
+    bounds: [76, 174, 180, 52]
+    shapeName: rect
+    fill: {type: solid, color: "$panel"}
+    border: {style: solid, width: 1, color: "$muted"}
+  - elementId: worker-a-text
+    elementType: text
+    bounds: [82, 180, 168, 40]
+    content: {style: "$node", align: [center, middle], text: "推理 Worker A\nHBM 由引擎管理"}
+  - elementId: worker-b
+    elementType: shape
+    bounds: [76, 254, 180, 52]
+    shapeName: rect
+    fill: {type: solid, color: "$panel"}
+    border: {style: solid, width: 1, color: "$muted"}
+  - elementId: worker-b-text
+    elementType: text
+    bounds: [82, 260, 168, 40]
+    content: {style: "$node", align: [center, middle], text: "推理 Worker B\nHBM 由引擎管理"}
+  - elementId: rpc-a
+    elementType: line
+    bounds: [256, 198, 86, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [stealth, stealth]
+    border: {style: solid, width: 1.2, color: "$structural"}
+  - elementId: rpc-b
+    elementType: line
+    bounds: [256, 278, 86, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [stealth, stealth]
+    border: {style: solid, width: 1.2, color: "$structural"}
+  - elementId: rpc-label-a
+    elementType: text
+    bounds: [264, 180, 70, 14]
+    content: {fontFamily: 微软雅黑, fontSize: 8, color: "$muted", align: [center, top], text: "ZMQ / gRPC"}
+  - elementId: rpc-label-b
+    elementType: text
+    bounds: [264, 260, 70, 14]
+    content: {fontFamily: 微软雅黑, fontSize: 8, color: "$muted", align: [center, top], text: "ZMQ / gRPC"}
+  - elementId: server
+    elementType: shape
+    bounds: [342, 174, 250, 132]
+    shapeName: rect
+    fill: {type: solid, color: "$structuralLight"}
+    border: {style: solid, width: 1.2, color: "$structural"}
+  - elementId: server-title
+    elementType: text
+    bounds: [352, 186, 230, 24]
+    content: {fontFamily: 微软雅黑, fontSize: 14, bold: true, color: "$ink", align: [center, middle], text: "LMCache Server"}
+  - elementId: server-subtitle
+    elementType: text
+    bounds: [352, 214, 230, 20]
+    content: {fontFamily: 微软雅黑, fontSize: 10.5, color: "$ink", align: [center, middle], text: "StorageManager＋L1Manager"}
+  - elementId: server-pool
+    elementType: shape
+    bounds: [362, 246, 210, 44]
+    shapeName: rect
+    fill: {type: solid, color: "$white"}
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: server-pool-text
+    elementType: text
+    bounds: [368, 250, 198, 36]
+    content: {fontFamily: 微软雅黑, fontSize: 10.5, bold: true, color: "$ink", lineHeight: 1.2, align: [center, middle], text: "节点共享 CPU DRAM 对象池\n对象状态 / TTL lock / 容量水位"}
+  - elementId: adapter-arrow
+    elementType: line
+    bounds: [592, 198, 94, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [stealth, stealth]
+    border: {style: solid, width: 1.2, color: "$muted"}
+  - elementId: p2p-arrow
+    elementType: line
+    bounds: [592, 278, 94, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [stealth, stealth]
+    border: {style: solid, width: 1.2, color: "$muted"}
+  - elementId: adapter-label
+    elementType: text
+    bounds: [600, 180, 78, 14]
+    content: {fontFamily: 微软雅黑, fontSize: 8, color: "$muted", align: [center, top], text: "持久读写"}
+  - elementId: p2p-label
+    elementType: text
+    bounds: [600, 260, 78, 14]
+    content: {fontFamily: 微软雅黑, fontSize: 8, color: "$muted", align: [center, top], text: "跨节点 P2P"}
+  - elementId: adapter
+    elementType: shape
+    bounds: [686, 174, 170, 52]
+    shapeName: rect
+    fill: {type: solid, color: "$panel"}
+    border: {style: solid, width: 1, color: "$structural"}
+  - elementId: adapter-text
+    elementType: text
+    bounds: [692, 180, 158, 40]
+    content: {style: "$node", align: [center, middle], text: "L2 Adapter\n持久存储"}
+  - elementId: peer
+    elementType: shape
+    bounds: [686, 254, 170, 52]
+    shapeName: rect
+    fill: {type: solid, color: "$panel"}
+    border: {style: solid, width: 1, color: "$structural"}
+  - elementId: peer-text
+    elementType: text
+    bounds: [692, 260, 158, 40]
+    content: {style: "$node", align: [center, middle], text: "对端 LMCache Server\n读取对端 CPU DRAM"}
+  - elementId: service-note
+    elementType: text
+    bounds: [76, 322, 780, 16]
+    content: {style: "$small", align: [center, top], text: "同一节点的多个推理实例访问一个缓存服务；对象查询、锁、容量与传输由 Server 协调"}
+  - elementId: share-head
+    elementType: text
+    bounds: [48, 372, 272, 18]
+    content: {fontFamily: 微软雅黑, fontSize: 11, bold: true, color: "$structural", text: "共享域"}
+  - elementId: share-text
+    elementType: text
+    bounds: [48, 396, 272, 58]
+    content: {fontFamily: 微软雅黑, fontSize: 11, color: "$ink", lineHeight: 1.3, text: "LMCache 的 L1 是节点共享 CPU DRAM；HBM 仍由引擎管理，跨节点可读取对端 DRAM。"}
+  - elementId: divider1
+    elementType: line
+    bounds: [324, 372, 1, 78]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: algo-head
+    elementType: text
+    bounds: [344, 372, 272, 18]
+    content: {fontFamily: 微软雅黑, fontSize: 11, bold: true, color: "$structural", text: "对象与算法"}
+  - elementId: algo-text
+    elementType: text
+    bounds: [344, 396, 272, 58]
+    content: {fontFamily: 微软雅黑, fontSize: 11, color: "$ink", lineHeight: 1.3, text: "前序 hash-chain 组织连续 KV；TTL lock 防读写竞争；容量水位触发 LRU／ARC 淘汰。"}
+  - elementId: divider2
+    elementType: line
+    bounds: [620, 372, 1, 78]
+    viewBox: [1, 1]
+    points: "0,0 0,1"
+    border: {style: solid, width: 1, color: "$line"}
+  - elementId: boundary-head
+    elementType: text
+    bounds: [640, 372, 272, 18]
+    content: {fontFamily: 微软雅黑, fontSize: 11, bold: true, color: "$structural", text: "独特边界"}
+  - elementId: boundary-text
+    elementType: text
+    bounds: [640, 396, 272, 58]
+    content: {fontFamily: 微软雅黑, fontSize: 11, color: "$ink", lineHeight: 1.3, text: "核心是对象服务与进程隔离；不是由每 DP rank 的 RadixTree 驻留状态驱动淘汰。"}
+  - elementId: takeaway-rule
+    elementType: shape
+    bounds: [48, 464, 4, 32]
+    shapeName: rect
+    fill: {type: solid, color: "$structural"}
+  - elementId: takeaway
+    elementType: text
+    bounds: [64, 460, 848, 40]
+    content: {fontFamily: 微软雅黑, fontSize: 12.5, color: "$ink", lineHeight: 1.3, align: [left, middle], text: "差异关键词：缓存成为节点级服务，共享单位是 Server 中的 KV 对象，而不是引擎内的前缀树节点。"}
+  - elementId: sources
+    elementType: text
+    bounds: [48, 511, 820, 16]
+    content:
+      fontFamily: 微软雅黑
+      fontSize: 7.5
+      color: "$faint"
+      text: |
+        <p>来源（2026-11 检索）：<a href="https://docs.lmcache.ai/mp/index.html">LMCache MP Architecture</a>。LMCache 的 L1／L2 命名按本项目术语映射为文字说明。</p>
+  - elementId: page-no
+    elementType: text
+    bounds: [886, 510, 26, 16]
+    content: {fontFamily: 微软雅黑, fontSize: 8, color: "$faint", align: [right, top], text: "02"}

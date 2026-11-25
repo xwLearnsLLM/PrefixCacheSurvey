@@ -1,0 +1,449 @@
+pageType: content
+background: {type: solid, color: "$background"}
+notes: 范围是 MooncakeStoreConnector 的跨请求前缀复用，不是 MooncakeConnector 的 P/D 实时传输。虚线为控制与元数据路径，实线为 KV 数据路径。外部四类介质表示 Master 可能返回的副本位置，不是逐级串行查询。
+elements:
+  - elementId: kicker
+    elementType: text
+    bounds: [58, 28, 700, 24]
+    content: {fontSize: 13, fontFamily: 微软雅黑, bold: true, color: "$managed", letterSpacing: 2, wrap: false, text: "PREFIX CACHE LOOKUP / 跨请求前缀复用"}
+  - elementId: title
+    elementType: text
+    bounds: [56, 55, 1250, 58]
+    content: {style: "$title", wrap: false, align: [left, middle], text: "vLLM + Mooncake Store｜KV Cache 命中流程"}
+  - elementId: subtitle
+    elementType: text
+    bounds: [58, 118, 1100, 28]
+    content: {style: "$subtitle", wrap: false, text: "五级介质｜一次外部元数据查询｜按副本位置取数｜最终回填 HBM Block"}
+  - elementId: legend
+    elementType: text
+    bounds: [1190, 112, 672, 40]
+    content:
+      fontSize: 13
+      fontFamily: 微软雅黑
+      color: "$muted"
+      align: [right, middle]
+      wrap: false
+      text: |
+        <p><span style="color:$control">┄ 控制／元数据</span>　<span style="color:$managed">─ 本地数据</span>　<span style="color:$dataplane">─ 远端数据</span>　<span style="color:$integrated">─ SSD 数据</span></p>
+  - elementId: top-rule
+    elementType: shape
+    bounds: [56, 154, 1808, 2]
+    shapeName: rect
+    fill: {type: solid, color: "$primary"}
+
+  - elementId: request-box
+    elementType: shape
+    bounds: [60, 178, 240, 94]
+    shapeName: rect
+    fill: {type: solid, color: "$surface"}
+    border: {style: solid, width: 1.2, color: "$grid"}
+  - elementId: request-text
+    elementType: text
+    bounds: [76, 187, 208, 76]
+    content:
+      style: "$body"
+      align: [center, middle]
+      text: |
+        <p><span style="font-size:20px"><strong>请求到达</strong></span></p>
+        <p><span style="color:$muted">Tokenize 后的 Prompt</span></p>
+  - elementId: arrow-request-hash
+    elementType: line
+    bounds: [300, 224, 50, 2]
+    viewBox: [50, 2]
+    points: "0,1 50,1"
+    arrow: [null, stealth]
+    border: {style: solid, width: 2, color: "$control"}
+  - elementId: hash-box
+    elementType: shape
+    bounds: [350, 178, 300, 94]
+    shapeName: rect
+    fill: {type: solid, color: "$surface"}
+    border: {style: solid, width: 1.2, color: "$grid"}
+  - elementId: hash-text
+    elementType: text
+    bounds: [366, 187, 268, 76]
+    content:
+      style: "$body"
+      align: [center, middle]
+      text: |
+        <p><span style="font-size:20px"><strong>生成 Block Key</strong></span></p>
+        <p><span style="color:$muted">内容寻址 Hash／Chunk</span></p>
+  - elementId: arrow-hash-hbm
+    elementType: line
+    bounds: [650, 224, 60, 2]
+    viewBox: [60, 2]
+    points: "0,1 60,1"
+    arrow: [null, stealth]
+    border: {style: solid, width: 2, color: "$control"}
+  - elementId: hbm-box
+    elementType: shape
+    bounds: [710, 178, 400, 94]
+    shapeName: rect
+    fill: {type: solid, color: "#DCE9E2"}
+    border: {style: solid, width: 1.5, color: "$managed"}
+  - elementId: hbm-text
+    elementType: text
+    bounds: [728, 185, 364, 80]
+    content:
+      style: "$body"
+      align: [center, middle]
+      text: |
+        <p><span style="font-size:20px;color:$managed"><strong>① HBM｜vLLM 本地前缀匹配</strong></span></p>
+        <p><span style="color:$muted">查询本实例 BlockPool／Prefix Cache</span></p>
+  - elementId: arrow-hbm-hit
+    elementType: line
+    bounds: [1110, 224, 80, 2]
+    viewBox: [80, 2]
+    points: "0,1 80,1"
+    arrow: [null, stealth]
+    border: {style: solid, width: 2.5, color: "$managed"}
+  - elementId: hbm-hit-box
+    elementType: shape
+    bounds: [1190, 178, 670, 94]
+    shapeName: rect
+    fill: {type: solid, color: "$primary"}
+  - elementId: hbm-hit-text
+    elementType: text
+    bounds: [1210, 187, 630, 76]
+    content:
+      style: "$body"
+      color: "#FFFFFF"
+      align: [center, middle]
+      text: |
+        <p><span style="font-size:20px"><strong>本地命中：直接复用已有 HBM Block</strong></span></p>
+        <p><span style="color:#DCE7E2">无需读取外部介质；再确定仍需外查的连续后缀</span></p>
+
+  - elementId: hbm-miss-arrow
+    elementType: line
+    bounds: [906, 272, 8, 48]
+    viewBox: [8, 48]
+    points: "4,0 4,48"
+    arrow: [null, stealth]
+    border: {style: dash, width: 2, color: "$control"}
+  - elementId: hbm-miss-label
+    elementType: text
+    bounds: [925, 282, 190, 24]
+    content: {fontSize: 13, fontFamily: 微软雅黑, color: "$muted", wrap: false, text: "未命中部分"}
+  - elementId: connector-box
+    elementType: shape
+    bounds: [710, 320, 400, 70]
+    shapeName: rect
+    fill: {type: solid, color: "$surface"}
+    border: {style: solid, width: 1.2, color: "$control"}
+  - elementId: connector-text
+    elementType: text
+    bounds: [726, 327, 368, 56]
+    content:
+      fontSize: 18
+      fontFamily: 微软雅黑
+      bold: true
+      color: "$ink"
+      align: [center, middle]
+      text: "MooncakeStoreConnector 外部查询"
+  - elementId: arrow-connector-master
+    elementType: line
+    bounds: [1110, 354, 80, 2]
+    viewBox: [80, 2]
+    points: "0,1 80,1"
+    arrow: [null, stealth]
+    border: {style: dash, width: 2, color: "$control"}
+  - elementId: master-box
+    elementType: shape
+    bounds: [1190, 320, 670, 70]
+    shapeName: rect
+    fill: {type: solid, color: "#E4EAE6"}
+    border: {style: solid, width: 1.2, color: "$control"}
+  - elementId: master-text
+    elementType: text
+    bounds: [1206, 327, 638, 56]
+    content:
+      fontSize: 17
+      fontFamily: 微软雅黑
+      color: "$ink"
+      align: [center, middle]
+      text: |
+        <p><strong>② Mooncake Master：按 Key 返回可读副本描述符</strong>　<span style="color:$muted">不经过 KV 数据</span></p>
+
+  - elementId: control-fanout
+    elementType: line
+    bounds: [300, 390, 1225, 475]
+    viewBox: [1225, 475]
+    points: "1225,0 1225,25 0,25 0,475"
+    curve: sharp
+    border: {style: dash, width: 1.5, color: "$control"}
+  - elementId: fanout-label
+    elementType: text
+    bounds: [330, 398, 770, 24]
+    content: {fontSize: 13, fontFamily: 微软雅黑, color: "$muted", wrap: false, text: "同一次查询的副本定位结果，不是四级串行探测"}
+
+  - elementId: local-dram-band
+    elementType: shape
+    bounds: [60, 440, 1450, 100]
+    shapeName: rect
+    fill: {type: solid, color: "$surface"}
+    border: {style: solid, width: 1, color: "$grid"}
+  - elementId: local-dram-label
+    elementType: text
+    bounds: [76, 451, 188, 78]
+    content:
+      style: "$body"
+      align: [left, middle]
+      text: |
+        <p><span style="font-size:20px;color:$managed"><strong>本地 DRAM</strong></span></p>
+        <p><span style="color:$muted">本机 Mooncake Client</span></p>
+  - elementId: control-local-dram
+    elementType: line
+    bounds: [300, 489, 30, 2]
+    viewBox: [30, 2]
+    points: "0,1 30,1"
+    arrow: [null, stealth]
+    border: {style: dash, width: 1.5, color: "$control"}
+  - elementId: local-dram-location
+    elementType: text
+    bounds: [346, 451, 440, 78]
+    content:
+      style: "$body"
+      align: [left, middle]
+      text: |
+        <p><strong>返回本地内存副本</strong></p>
+        <p><span style="color:$muted">Replica Descriptor＋注册地址</span></p>
+  - elementId: arrow-local-dram-data
+    elementType: line
+    bounds: [810, 489, 50, 2]
+    viewBox: [50, 2]
+    points: "0,1 50,1"
+    arrow: [null, stealth]
+    border: {style: solid, width: 2.5, color: "$managed"}
+  - elementId: local-dram-data
+    elementType: text
+    bounds: [876, 451, 610, 78]
+    content:
+      style: "$body"
+      align: [left, middle]
+      text: |
+        <p><span style="color:$managed"><strong>本地 memcpy／注册内存读取</strong></span></p>
+        <p><span style="color:$muted">→ 本地接收 Buffer → H2D</span></p>
+  - elementId: arrow-local-dram-target
+    elementType: line
+    bounds: [1510, 489, 70, 2]
+    viewBox: [70, 2]
+    points: "0,1 70,1"
+    arrow: [null, stealth]
+    border: {style: solid, width: 2.5, color: "$managed"}
+
+  - elementId: local-ssd-band
+    elementType: shape
+    bounds: [60, 565, 1450, 100]
+    shapeName: rect
+    fill: {type: solid, color: "#F7F1E8"}
+    border: {style: solid, width: 1, color: "$grid"}
+  - elementId: local-ssd-label
+    elementType: text
+    bounds: [76, 576, 188, 78]
+    content:
+      style: "$body"
+      align: [left, middle]
+      text: |
+        <p><span style="font-size:20px;color:$integrated"><strong>本地 SSD</strong></span></p>
+        <p><span style="color:$muted">本机 Client 的 NVMe</span></p>
+  - elementId: control-local-ssd
+    elementType: line
+    bounds: [300, 614, 30, 2]
+    viewBox: [30, 2]
+    points: "0,1 30,1"
+    arrow: [null, stealth]
+    border: {style: dash, width: 1.5, color: "$control"}
+  - elementId: local-ssd-location
+    elementType: text
+    bounds: [346, 576, 440, 78]
+    content:
+      style: "$body"
+      align: [left, middle]
+      text: |
+        <p><strong>返回 LOCAL_DISK 副本</strong></p>
+        <p><span style="color:$muted">DRAM Miss 后由所属 Client 读盘</span></p>
+  - elementId: arrow-local-ssd-data
+    elementType: line
+    bounds: [810, 614, 50, 2]
+    viewBox: [50, 2]
+    points: "0,1 50,1"
+    arrow: [null, stealth]
+    border: {style: solid, width: 2.5, color: "$integrated"}
+  - elementId: local-ssd-data
+    elementType: text
+    bounds: [876, 576, 610, 78]
+    content:
+      style: "$body"
+      align: [left, middle]
+      text: |
+        <p><span style="color:$integrated"><strong>SSD 读取 → 本地 DRAM／接收 Buffer</strong></span></p>
+        <p><span style="color:$muted">→ H2D；热数据可按策略提升到 DRAM</span></p>
+  - elementId: arrow-local-ssd-target
+    elementType: line
+    bounds: [1510, 614, 70, 2]
+    viewBox: [70, 2]
+    points: "0,1 70,1"
+    arrow: [null, stealth]
+    border: {style: solid, width: 2.5, color: "$integrated"}
+
+  - elementId: remote-dram-band
+    elementType: shape
+    bounds: [60, 690, 1450, 100]
+    shapeName: rect
+    fill: {type: solid, color: "#EDF2F5"}
+    border: {style: solid, width: 1, color: "$grid"}
+  - elementId: remote-dram-label
+    elementType: text
+    bounds: [76, 701, 188, 78]
+    content:
+      style: "$body"
+      align: [left, middle]
+      text: |
+        <p><span style="font-size:20px;color:$dataplane"><strong>分布式 DRAM</strong></span></p>
+        <p><span style="color:$muted">远端 Mooncake Client</span></p>
+  - elementId: control-remote-dram
+    elementType: line
+    bounds: [300, 739, 30, 2]
+    viewBox: [30, 2]
+    points: "0,1 30,1"
+    arrow: [null, stealth]
+    border: {style: dash, width: 1.5, color: "$control"}
+  - elementId: remote-dram-location
+    elementType: text
+    bounds: [346, 701, 440, 78]
+    content:
+      style: "$body"
+      align: [left, middle]
+      text: |
+        <p><strong>返回远端内存副本</strong></p>
+        <p><span style="color:$muted">Master 定位拥有副本的 Client</span></p>
+  - elementId: arrow-remote-dram-data
+    elementType: line
+    bounds: [810, 739, 50, 2]
+    viewBox: [50, 2]
+    points: "0,1 50,1"
+    arrow: [null, stealth]
+    border: {style: solid, width: 2.5, color: "$dataplane"}
+  - elementId: remote-dram-data
+    elementType: text
+    bounds: [876, 701, 610, 78]
+    content:
+      style: "$body"
+      align: [left, middle]
+      text: |
+        <p><span style="color:$dataplane"><strong>Transfer Engine：RDMA／TCP P2P</strong></span></p>
+        <p><span style="color:$muted">远端 Client DRAM → 本地 Buffer → H2D</span></p>
+  - elementId: arrow-remote-dram-target
+    elementType: line
+    bounds: [1510, 739, 70, 2]
+    viewBox: [70, 2]
+    points: "0,1 70,1"
+    arrow: [null, stealth]
+    border: {style: solid, width: 2.5, color: "$dataplane"}
+
+  - elementId: remote-ssd-band
+    elementType: shape
+    bounds: [60, 815, 1450, 100]
+    shapeName: rect
+    fill: {type: solid, color: "#F3EFE8"}
+    border: {style: solid, width: 1, color: "$grid"}
+  - elementId: remote-ssd-label
+    elementType: text
+    bounds: [76, 826, 188, 78]
+    content:
+      style: "$body"
+      align: [left, middle]
+      text: |
+        <p><span style="font-size:20px;color:$remoteSsd"><strong>分布式 SSD</strong></span></p>
+        <p><span style="color:$muted">远端 Client 的本地盘</span></p>
+  - elementId: control-remote-ssd
+    elementType: line
+    bounds: [300, 864, 30, 2]
+    viewBox: [30, 2]
+    points: "0,1 30,1"
+    arrow: [null, stealth]
+    border: {style: dash, width: 1.5, color: "$control"}
+  - elementId: remote-ssd-location
+    elementType: text
+    bounds: [346, 826, 440, 78]
+    content:
+      style: "$body"
+      align: [left, middle]
+      text: |
+        <p><strong>返回远端 SSD／DFS 副本</strong></p>
+        <p><span style="color:$muted">不是独立的全局 SSD 逐级索引</span></p>
+  - elementId: arrow-remote-ssd-data
+    elementType: line
+    bounds: [810, 864, 50, 2]
+    viewBox: [50, 2]
+    points: "0,1 50,1"
+    arrow: [null, stealth]
+    border: {style: solid, width: 2.5, color: "$remoteSsd"}
+  - elementId: remote-ssd-data
+    elementType: text
+    bounds: [876, 826, 610, 78]
+    content:
+      style: "$body"
+      align: [left, middle]
+      text: |
+        <p><span style="color:$remoteSsd"><strong>所属 Client 读盘 → RDMA／TCP</strong></span></p>
+        <p><span style="color:$muted">→ 本地接收 Buffer → H2D</span></p>
+  - elementId: arrow-remote-ssd-target
+    elementType: line
+    bounds: [1510, 864, 70, 2]
+    viewBox: [70, 2]
+    points: "0,1 70,1"
+    arrow: [null, stealth]
+    border: {style: solid, width: 2.5, color: "$remoteSsd"}
+
+  - elementId: hbm-target-box
+    elementType: shape
+    bounds: [1580, 440, 280, 475]
+    shapeName: rect
+    fill: {type: solid, color: "$primary"}
+  - elementId: hbm-target-text
+    elementType: text
+    bounds: [1602, 469, 236, 417]
+    content:
+      fontSize: 18
+      fontFamily: 微软雅黑
+      color: "#FFFFFF"
+      lineHeight: 1.35
+      align: [center, middle]
+      text: |
+        <p><span style="font-size:24px"><strong>③ 回填 vLLM</strong></span></p>
+        <p><span style="font-size:24px"><strong>HBM Block</strong></span></p>
+        <p>　</p>
+        <p><span style="color:#DCE7E2">为目标请求分配 Block</span></p>
+        <p><span style="color:#DCE7E2">映射对象到内存区间</span></p>
+        <p><span style="color:#DCE7E2">等待必需传输完成</span></p>
+        <p>　</p>
+        <p><span style="font-size:14px;color:#B9CFC5">可逐层／异步加载</span></p>
+        <p><span style="font-size:14px;color:#B9CFC5">具体路径依赖 Connector</span></p>
+
+  - elementId: outcome-box
+    elementType: shape
+    bounds: [60, 955, 1800, 100]
+    shapeName: rect
+    fill: {type: solid, color: "#E4EAE6"}
+    border: {style: solid, width: 1, color: "$grid"}
+  - elementId: outcome-text
+    elementType: text
+    bounds: [84, 968, 1752, 74]
+    content:
+      fontSize: 18
+      fontFamily: 微软雅黑
+      color: "$ink"
+      lineHeight: 1.35
+      align: [center, middle]
+      text: |
+        <p><strong>④ 形成最长连续可复用前缀</strong>　本地命中＋外部命中 → 仅计算未命中后缀</p>
+        <p><span style="color:$muted">若外部未命中，则正常 Prefill；新产生的 KV 可按配置异步写入 Mooncake Store</span></p>
+  - elementId: footnote
+    elementType: text
+    bounds: [60, 1080, 1800, 66]
+    content:
+      style: "$small"
+      text: |
+        <p>范围：MooncakeStoreConnector 的跨请求前缀复用，不是 MooncakeConnector 的 P/D 实时传输。分布式 SSD 指远端 Client 的 SSD 副本。</p>
+        <p>注：SSD→DRAM 提升为可选策略；是否支持 GPU 直读取决于硬件、注册内存与 Connector，本图画出通用的本地 Buffer→H2D 路径。依据：llm-d 与 Mooncake Store 官方文档。</p>

@@ -1,0 +1,159 @@
+pageType: content
+background: {type: solid, color: "$bg"}
+elements:
+  - elementId: eyebrow
+    elementType: text
+    bounds: [48, 22, 650, 16]
+    content: {fontFamily: 微软雅黑, fontSize: 9, color: "$structural", bold: true, letterSpacing: 1.1, text: "HHM KVCACHE · 技术选型 03/03"}
+  - elementId: title
+    elementType: text
+    bounds: [48, 44, 864, 36]
+    content: {style: "$title", fontSize: 25, text: "选型：HiCache 为基座，MemCache＋MemFabric 为 ASU 数据面"}
+  - elementId: subtitle
+    elementType: text
+    bounds: [48, 86, 864, 22]
+    content: {style: "$subtitle", text: "推荐一个主基座，而不是叠加两套缓存策略；以下改造判断仅面向 HHM＋ASU 目标架构。"}
+  - elementId: recommend-label
+    elementType: text
+    bounds: [48, 118, 100, 20]
+    content: {fontFamily: 微软雅黑, fontSize: 10, color: "$muted", bold: true, text: "推荐主基座"}
+  - elementId: recommend
+    elementType: text
+    bounds: [148, 108, 180, 40]
+    content: {fontFamily: 微软雅黑, fontSize: 28, color: "$accent", bold: true, text: "HiCache"}
+  - elementId: recommend-reason
+    elementType: text
+    bounds: [340, 116, 572, 28]
+    content: {fontFamily: 微软雅黑, fontSize: 12, color: "$ink", align: [right, middle], text: "前缀树改造量最小，同时保留 ASU 后端与昇腾数据面的替换自由"}
+  - elementId: comparison
+    elementType: table
+    bounds: [48, 156, 864, 220]
+    columnWidths: [0.16, 0.19, 0.21, 0.20, 0.24]
+    rowHeights: [0.17, 0.2075, 0.2075, 0.2075, 0.2075]
+    style:
+      cellStyle:
+        fontFamily: 微软雅黑
+        fontSize: 10
+        color: "$ink"
+        lineHeight: 1.18
+        border: [null, null, {style: solid, width: 1, color: "$line"}, null]
+        align: [left, middle]
+      firstRowStyle:
+        fill: {type: solid, color: "$ink"}
+        color: "$white"
+        bold: true
+        fontSize: 10
+        align: [left, middle]
+    rows:
+      - - text: "候选框架"
+        - text: "本地前缀控制"
+        - text: "驻留与淘汰"
+        - text: "全局池／数据面"
+        - text: "面向 HHM 的主要缺口"
+      - - text: "<strong>HiCache</strong>"
+          fill: {type: solid, color: "$accentLight"}
+        - text: "HiRadixTree\n最长前缀匹配"
+          fill: {type: solid, color: "$accentLight"}
+        - text: "L1／L2／L3\n叶淘汰＋写入策略"
+          fill: {type: solid, color: "$accentLight"}
+        - text: "L3 可插拔\n统一存储接口"
+          fill: {type: solid, color: "$accentLight"}
+        - text: "本地两层改为 DRAM／HBF；\n迁移与淘汰纳入 forward"
+          fill: {type: solid, color: "$accentLight"}
+      - - text: "LMCache MP"
+        - text: "前序 hash-chain\n连续 key 序列"
+        - text: "节点 CPU 对象\n水位 LRU／ARC"
+        - text: "P2P＋持久 adapter"
+        - text: "需新增每 rank 驻留树、\nHBF 准入与前沿淘汰"
+      - - text: "Mooncake"
+        - text: "由上层引擎负责"
+        - text: "全局对象\nlease／pin／offload"
+        - text: "Client 副本池\nTransfer Engine"
+        - text: "本地 D／H 控制与\n前缀树淘汰需另建"
+      - - text: "MemCache＋MF"
+        - text: "由上层引擎负责"
+        - text: "分布式对象\nMetaService 管理"
+        - text: "昇腾 OneCopy\n跨机跨介质"
+        - text: "最接近 ASU；不能替代\n本地缓存控制面"
+  - elementId: mapping-label
+    elementType: text
+    bounds: [48, 394, 180, 20]
+    content: {fontFamily: 微软雅黑, fontSize: 11, color: "$muted", bold: true, text: "推荐的落地分工"}
+  - elementId: map1
+    elementType: shape
+    bounds: [48, 423, 170, 46]
+    shapeName: rect
+    fill: {type: solid, color: "$accentLight"}
+    border: {style: solid, width: 1.2, color: "$accent"}
+  - elementId: map1-text
+    elementType: text
+    bounds: [54, 428, 158, 36]
+    content: {style: "$node", align: [center, middle], text: "HiCache 控制面\nRadixTree＋Controller"}
+  - elementId: map-arrow1
+    elementType: line
+    bounds: [218, 444, 34, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [null, stealth]
+    border: {style: solid, width: 1.3, color: "$accent"}
+  - elementId: map2
+    elementType: shape
+    bounds: [252, 423, 190, 46]
+    shapeName: rect
+    fill: {type: solid, color: "$structuralLight"}
+    border: {style: solid, width: 1, color: "$structural"}
+  - elementId: map2-text
+    elementType: text
+    bounds: [258, 428, 178, 36]
+    content: {style: "$node", align: [center, middle], text: "HHM-DRAM／HBF\n观察、准入、驻留前沿"}
+  - elementId: map-arrow2
+    elementType: line
+    bounds: [442, 444, 34, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [null, stealth]
+    border: {style: solid, width: 1.3, color: "$accent"}
+  - elementId: map3
+    elementType: shape
+    bounds: [476, 423, 174, 46]
+    shapeName: rect
+    fill: {type: solid, color: "$white"}
+    border: {style: solid, width: 1, color: "$muted"}
+  - elementId: map3-text
+    elementType: text
+    bounds: [482, 428, 162, 36]
+    content: {style: "$node", align: [center, middle], text: "ASU Backend\nlookup／lock／read／write"}
+  - elementId: map-arrow3
+    elementType: line
+    bounds: [650, 444, 34, 2]
+    viewBox: [1, 1]
+    points: "0,0 1,0"
+    arrow: [null, stealth]
+    border: {style: solid, width: 1.3, color: "$accent"}
+  - elementId: map4
+    elementType: shape
+    bounds: [684, 423, 228, 46]
+    shapeName: rect
+    fill: {type: solid, color: "$structuralLight"}
+    border: {style: solid, width: 1, color: "$structural"}
+  - elementId: map4-text
+    elementType: text
+    bounds: [690, 428, 216, 36]
+    content: {style: "$node", align: [center, middle], text: "MemCache＋MemFabric\n全局对象元数据＋OneCopy"}
+  - elementId: conclusion
+    elementType: text
+    bounds: [48, 480, 864, 22]
+    content: {fontFamily: 微软雅黑, fontSize: 11.5, color: "$ink", align: [center, top], text: "理由归结：保留前缀管理的已有资产，把开发集中在 HHM 特有策略；ASU 则复用成熟对象池与昇腾传输。"}
+  - elementId: sources
+    elementType: text
+    bounds: [48, 511, 820, 16]
+    content:
+      fontFamily: 微软雅黑
+      fontSize: 7.5
+      color: "$faint"
+      text: |
+        <p>依据（2026-11 检索）：四项目官方架构文档；<a href="https://github.com/sgl-project/sglang/issues/35620">Ascend MemCache HiCache L3 RFC</a> 同样将前缀匹配与生命周期留给 HiCache。本页为定性选型，不是通用性能排名或工时估计。</p>
+  - elementId: page-no
+    elementType: text
+    bounds: [886, 510, 26, 16]
+    content: {fontFamily: 微软雅黑, fontSize: 8, color: "$faint", align: [right, top], text: "03"}
